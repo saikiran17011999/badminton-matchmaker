@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+:root {
+  --primary: #4CAF50;
+  --primary-light: #81C784;
+  --primary-dark: #388E3C;
+  --secondary: #FF9800;
+  --secondary-light: #FFB74D;
+  --accent: #2196F3;
+  --court-green: #4CAF50;
+  --court-line: #FFFFFF;
+  --bg-light: #F0F7F0;
+  --text-dark: #1a1a1a;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+  min-height: 100vh;
+}
+
+.court-bg {
+  background: linear-gradient(180deg, #66BB6A 0%, #43A047 100%);
+  position: relative;
+}
+
+.court-lines {
+  position: absolute;
+  inset: 0;
+  border: 3px solid white;
+  pointer-events: none;
+}
+
+.court-lines::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: white;
+  transform: translateX(-50%);
+}
+
+.court-lines::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: white;
+  transform: translateY(-50%);
+}
+
+.player-card {
+  transition: all 0.2s ease;
+}
+
+.player-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.player-card.selected {
+  ring: 3px;
+  ring-color: #FF9800;
+  transform: scale(1.05);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #FF9800 0%, #FFB74D 100%);
+  color: white;
+  font-weight: 600;
+  padding: 0.5rem 1.5rem;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  transform: translateY(-1px);
+}
+
+.card {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.shuttlecock-icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+}
