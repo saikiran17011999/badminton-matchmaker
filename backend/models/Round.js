@@ -1,10 +1,10 @@
-const db = require('./database');
+const { prepare } = require('./database');
 const { generateRoundId } = require('../utils/idGenerator');
 
 class Round {
   static create({ eventId, roundNumber, restingPlayers = [] }) {
     const id = generateRoundId();
-    const stmt = db.prepare(`
+    const stmt = prepare(`
       INSERT INTO rounds (id, event_id, round_number, resting_players)
       VALUES (?, ?, ?, ?)
     `);
@@ -13,7 +13,7 @@ class Round {
   }
 
   static findByEventAndNumber(eventId, roundNumber) {
-    const stmt = db.prepare(`
+    const stmt = prepare(`
       SELECT * FROM rounds WHERE event_id = ? AND round_number = ?
     `);
     const round = stmt.get(eventId, roundNumber);
@@ -22,13 +22,13 @@ class Round {
   }
 
   static findByEventId(eventId) {
-    const stmt = db.prepare('SELECT * FROM rounds WHERE event_id = ? ORDER BY round_number');
+    const stmt = prepare('SELECT * FROM rounds WHERE event_id = ? ORDER BY round_number');
     const rounds = stmt.all(eventId);
     return rounds.map(this.format);
   }
 
   static getLatestRoundNumber(eventId) {
-    const stmt = db.prepare('SELECT MAX(round_number) as max FROM rounds WHERE event_id = ?');
+    const stmt = prepare('SELECT MAX(round_number) as max FROM rounds WHERE event_id = ?');
     const result = stmt.get(eventId);
     return result?.max ?? 0;
   }

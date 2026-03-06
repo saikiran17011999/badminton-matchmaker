@@ -1,10 +1,10 @@
-const db = require('./database');
+const { prepare } = require('./database');
 const { generateMatchId } = require('../utils/idGenerator');
 
 class Match {
   static create({ eventId, roundNumber, courtNumber, team1Players, team2Players }) {
     const id = generateMatchId();
-    const stmt = db.prepare(`
+    const stmt = prepare(`
       INSERT INTO matches (id, event_id, round_number, court_number, team1_players, team2_players)
       VALUES (?, ?, ?, ?, ?, ?)
     `);
@@ -20,14 +20,14 @@ class Match {
   }
 
   static findById(id) {
-    const stmt = db.prepare('SELECT * FROM matches WHERE id = ?');
+    const stmt = prepare('SELECT * FROM matches WHERE id = ?');
     const match = stmt.get(id);
     if (!match) return null;
     return this.format(match);
   }
 
   static findByEventAndRound(eventId, roundNumber) {
-    const stmt = db.prepare(`
+    const stmt = prepare(`
       SELECT * FROM matches
       WHERE event_id = ? AND round_number = ?
       ORDER BY court_number
@@ -37,7 +37,7 @@ class Match {
   }
 
   static updateScore(id, { team1Score, team2Score }) {
-    const stmt = db.prepare(`
+    const stmt = prepare(`
       UPDATE matches
       SET team1_score = ?, team2_score = ?, status = 'completed'
       WHERE id = ?
@@ -47,7 +47,7 @@ class Match {
   }
 
   static updatePlayers(id, { team1Players, team2Players }) {
-    const stmt = db.prepare(`
+    const stmt = prepare(`
       UPDATE matches SET team1_players = ?, team2_players = ? WHERE id = ?
     `);
     stmt.run(JSON.stringify(team1Players), JSON.stringify(team2Players), id);

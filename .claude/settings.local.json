@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(wsl -e bash -c \"cd /mnt/c/Users/saikiran/Desktop/website_testing && git push -u origin main --force\")"
+    ]
+  }
+}

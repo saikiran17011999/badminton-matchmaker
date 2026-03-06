@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const config = require('./config');
+const { initDatabase } = require('./models/database');
 const routes = require('./routes');
 const errorHandler = require('./middleware/errorHandler');
 const requestLogger = require('./middleware/requestLogger');
@@ -43,9 +44,21 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Not Found', code: 'NOT_FOUND' });
 });
 
-app.listen(config.port, () => {
-  console.log(`Server running on http://localhost:${config.port}`);
-  console.log(`Environment: ${config.nodeEnv}`);
-});
+const startServer = async () => {
+  try {
+    await initDatabase();
+    console.log('Database initialized');
+
+    app.listen(config.port, () => {
+      console.log(`Server running on http://localhost:${config.port}`);
+      console.log(`Environment: ${config.nodeEnv}`);
+    });
+  } catch (err) {
+    console.error('Failed to start server:', err);
+    process.exit(1);
+  }
+};
+
+startServer();
 
 module.exports = app;

@@ -1,10 +1,10 @@
-const db = require('./database');
+const { prepare } = require('./database');
 const { generateEventId } = require('../utils/idGenerator');
 
 class Event {
   static create({ type, numCourts }) {
     const id = generateEventId();
-    const stmt = db.prepare(`
+    const stmt = prepare(`
       INSERT INTO events (id, type, num_courts)
       VALUES (?, ?, ?)
     `);
@@ -13,20 +13,20 @@ class Event {
   }
 
   static findById(id) {
-    const stmt = db.prepare('SELECT * FROM events WHERE id = ?');
+    const stmt = prepare('SELECT * FROM events WHERE id = ?');
     const event = stmt.get(id);
     if (!event) return null;
     return this.format(event);
   }
 
   static updateCurrentRound(id, roundNumber) {
-    const stmt = db.prepare('UPDATE events SET current_round = ? WHERE id = ?');
+    const stmt = prepare('UPDATE events SET current_round = ? WHERE id = ?');
     stmt.run(roundNumber, id);
     return this.findById(id);
   }
 
   static delete(id) {
-    const stmt = db.prepare('DELETE FROM events WHERE id = ?');
+    const stmt = prepare('DELETE FROM events WHERE id = ?');
     return stmt.run(id);
   }
 

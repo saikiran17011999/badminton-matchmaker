@@ -1,10 +1,10 @@
-const db = require('./database');
+const { prepare } = require('./database');
 const { generatePlayerId } = require('../utils/idGenerator');
 
 class Player {
   static create({ eventId, name, rating = 1000, matchesPlayed = 0 }) {
     const id = generatePlayerId();
-    const stmt = db.prepare(`
+    const stmt = prepare(`
       INSERT INTO players (id, event_id, name, rating, matches_played)
       VALUES (?, ?, ?, ?, ?)
     `);
@@ -13,14 +13,14 @@ class Player {
   }
 
   static findById(id) {
-    const stmt = db.prepare('SELECT * FROM players WHERE id = ?');
+    const stmt = prepare('SELECT * FROM players WHERE id = ?');
     const player = stmt.get(id);
     if (!player) return null;
     return this.format(player);
   }
 
   static findByEventId(eventId) {
-    const stmt = db.prepare('SELECT * FROM players WHERE event_id = ? ORDER BY joined_at');
+    const stmt = prepare('SELECT * FROM players WHERE event_id = ? ORDER BY joined_at');
     const players = stmt.all(eventId);
     return players.map(this.format);
   }
@@ -29,7 +29,7 @@ class Player {
     const current = this.findById(id);
     if (!current) return null;
 
-    const stmt = db.prepare(`
+    const stmt = prepare(`
       UPDATE players
       SET name = ?, rating = ?, matches_played = ?
       WHERE id = ?
@@ -44,25 +44,25 @@ class Player {
   }
 
   static incrementMatchesPlayed(id) {
-    const stmt = db.prepare(`
+    const stmt = prepare(`
       UPDATE players SET matches_played = matches_played + 1 WHERE id = ?
     `);
     stmt.run(id);
   }
 
   static updateRating(id, newRating) {
-    const stmt = db.prepare('UPDATE players SET rating = ? WHERE id = ?');
+    const stmt = prepare('UPDATE players SET rating = ? WHERE id = ?');
     stmt.run(Math.round(newRating), id);
   }
 
   static getMinMatchesPlayed(eventId) {
-    const stmt = db.prepare('SELECT MIN(matches_played) as min FROM players WHERE event_id = ?');
+    const stmt = prepare('SELECT MIN(matches_played) as min FROM players WHERE event_id = ?');
     const result = stmt.get(eventId);
     return result?.min ?? 0;
   }
 
   static delete(id) {
-    const stmt = db.prepare('DELETE FROM players WHERE id = ?');
+    const stmt = prepare('DELETE FROM players WHERE id = ?');
     return stmt.run(id);
   }
 
