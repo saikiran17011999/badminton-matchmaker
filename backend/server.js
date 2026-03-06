@@ -18,14 +18,16 @@ app.use('/api', routes);
 if (config.nodeEnv === 'production') {
   const frontendPath = path.join(__dirname, '../frontend/dist');
   app.use(express.static(frontendPath));
+}
 
-  app.get('*', (req, res) => {
-    if (!req.path.startsWith('/api')) {
-      res.sendFile(path.join(frontendPath, 'index.html'));
-    }
-  });
-} else {
-  app.get('/', (req, res) => {
+app.use(errorHandler);
+
+// Catch-all handler for SPA routing (must be after API routes)
+app.use((req, res) => {
+  if (config.nodeEnv === 'production' && !req.path.startsWith('/api')) {
+    const frontendPath = path.join(__dirname, '../frontend/dist');
+    res.sendFile(path.join(frontendPath, 'index.html'));
+  } else if (req.path === '/' && config.nodeEnv !== 'production') {
     res.json({
       name: 'Badminton Matchmaking API',
       version: '1.0.0',
@@ -35,13 +37,9 @@ if (config.nodeEnv === 'production') {
         docs: 'See /docs/api.md for full documentation'
       }
     });
-  });
-}
-
-app.use(errorHandler);
-
-app.use((req, res) => {
-  res.status(404).json({ error: 'Not Found', code: 'NOT_FOUND' });
+  } else {
+    res.status(404).json({ error: 'Not Found', code: 'NOT_FOUND' });
+  }
 });
 
 const startServer = async () => {
