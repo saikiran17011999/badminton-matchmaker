@@ -6,6 +6,7 @@ const CourtCard = ({ match, courtNumber, onPlayerClick, isPlayerSelected, onScor
   const [team2Score, setTeam2Score] = useState('');
   const [showScoreInput, setShowScoreInput] = useState(false);
 
+  /* ── Logic unchanged ── */
   const handleSubmitScore = () => {
     if (team1Score !== '' && team2Score !== '') {
       onScoreSubmit(match.id, parseInt(team1Score), parseInt(team2Score));
@@ -13,100 +14,124 @@ const CourtCard = ({ match, courtNumber, onPlayerClick, isPlayerSelected, onScor
     }
   };
 
+  const isCompleted = match.status === 'completed';
+
   return (
-    <div className="card overflow-hidden">
-      <div className="bg-gradient-to-r from-green-500 to-green-600 px-4 py-2 flex justify-between items-center">
-        <h3 className="text-white font-bold">Court {courtNumber}</h3>
-        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-          match.status === 'completed' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800'
-        }`}>
-          {match.status === 'completed' ? 'Completed' : 'In Progress'}
+    <div className="court-card">
+
+      {/* ── Header ── */}
+      <div className="court-header">
+        <span className="court-number">
+          <span className="court-number-dot" />
+          Court {courtNumber}
+        </span>
+        <span className={`status-badge ${isCompleted ? 'status-badge--done' : 'status-badge--live'}`}>
+          {isCompleted ? '✓ Completed' : 'Live'}
         </span>
       </div>
 
-      <div className="court-bg p-4 relative min-h-[200px]">
-        <div className="court-lines rounded-lg"></div>
+      {/* ── Court surface ── */}
+      <div className="court-surface">
 
-        <div className="relative z-10 flex flex-col h-full">
-          <div className="flex-1 flex items-center justify-center gap-2 mb-4">
-            {match.team1Players.map(player => (
-              <PlayerCard
-                key={player.id}
-                player={player}
-                onClick={onPlayerClick}
-                isSelected={isPlayerSelected(player.id)}
-                showRating={false}
-                size="small"
-              />
-            ))}
-          </div>
+        {/* Court markings (non-interactive) */}
+        <div className="court-boundary" aria-hidden="true" />
+        <div className="court-net"      aria-hidden="true" />
+        <div className="court-ssl-top"  aria-hidden="true" />
+        <div className="court-ssl-bottom" aria-hidden="true" />
+        <div className="court-cl-top"   aria-hidden="true" />
+        <div className="court-cl-bottom" aria-hidden="true" />
 
-          <div className="flex items-center justify-center gap-4 py-2">
-            {match.status === 'completed' ? (
-              <div className="bg-white/90 backdrop-blur px-6 py-2 rounded-full font-bold text-xl">
-                {match.team1Score} - {match.team2Score}
-              </div>
-            ) : (
-              <div className="bg-white/90 backdrop-blur px-4 py-1 rounded-full font-bold text-orange-500">
-                VS
-              </div>
-            )}
-          </div>
+        {/* Net label */}
+        <div className="net-label" aria-hidden="true">
+          <span className="net-label-inner">NET</span>
+        </div>
 
-          <div className="flex-1 flex items-center justify-center gap-2 mt-4">
-            {match.team2Players.map(player => (
-              <PlayerCard
-                key={player.id}
-                player={player}
-                onClick={onPlayerClick}
-                isSelected={isPlayerSelected(player.id)}
-                showRating={false}
-                size="small"
-              />
-            ))}
+        {/* Score (completed) */}
+        {isCompleted && (
+          <div className="court-score">
+            <div className="score-display">
+              {match.team1Score}<span style={{ opacity: .5, margin: '0 3px' }}>–</span>{match.team2Score}
+            </div>
           </div>
+        )}
+
+        {/* Team 1 (top half) */}
+        <div className="court-half" style={{ alignItems: 'flex-end', paddingBottom: '2px' }}>
+          {match.team1Players.map((player) => (
+            <PlayerCard
+              key={player.id}
+              player={player}
+              onClick={onPlayerClick}
+              isSelected={isPlayerSelected(player.id)}
+              showRating={false}
+              size="small"
+            />
+          ))}
+        </div>
+
+        {/* spacer for net */}
+        <div style={{ height: '6px' }} />
+
+        {/* Team 2 (bottom half) */}
+        <div className="court-half court-half--bottom" style={{ alignItems: 'flex-start', paddingTop: '2px' }}>
+          {match.team2Players.map((player) => (
+            <PlayerCard
+              key={player.id}
+              player={player}
+              onClick={onPlayerClick}
+              isSelected={isPlayerSelected(player.id)}
+              showRating={false}
+              size="small"
+            />
+          ))}
         </div>
       </div>
 
-      {match.status !== 'completed' && (
-        <div className="p-3 bg-gray-50 border-t">
+      {/* ── Score input footer ── */}
+      {!isCompleted && (
+        <div className="score-footer">
           {showScoreInput ? (
-            <div className="flex items-center gap-2">
+            <div className="score-inputs">
               <input
                 type="number"
                 min="0"
                 value={team1Score}
                 onChange={(e) => setTeam1Score(e.target.value)}
-                placeholder="Team 1"
-                className="w-20 px-2 py-1 border rounded text-center"
+                placeholder="T1"
+                className="score-input"
               />
-              <span className="text-gray-400">-</span>
+              <span className="score-divider">–</span>
               <input
                 type="number"
                 min="0"
                 value={team2Score}
                 onChange={(e) => setTeam2Score(e.target.value)}
-                placeholder="Team 2"
-                className="w-20 px-2 py-1 border rounded text-center"
+                placeholder="T2"
+                className="score-input"
               />
               <button
                 onClick={handleSubmitScore}
-                className="btn-primary text-sm py-1 px-3"
+                className="btn-primary py-1.5 px-4 text-sm"
+                style={{ borderRadius: '7px', minWidth: 0 }}
               >
                 Save
               </button>
               <button
                 onClick={() => setShowScoreInput(false)}
-                className="text-gray-500 text-sm hover:text-gray-700"
+                className="score-cancel"
               >
-                Cancel
+                ✕
               </button>
             </div>
           ) : (
             <button
               onClick={() => setShowScoreInput(true)}
-              className="w-full btn-secondary text-sm"
+              className="btn-secondary w-full justify-center"
             >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
               Enter Score
             </button>
           )}
