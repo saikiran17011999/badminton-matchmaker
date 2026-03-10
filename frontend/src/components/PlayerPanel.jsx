@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import PlayerCard from './PlayerCard';
 
-const PlayerPanel = ({ players, onAddPlayer, onUpdatePlayer, onRemovePlayer, loading }) => {
+const PlayerPanel = ({ players, onAddPlayer, onUpdatePlayer, onRemovePlayer, loading, isOverlay = false }) => {
   const [newPlayerName, setNewPlayerName] = useState('');
   const [editingPlayer, setEditingPlayer] = useState(null);
   const [editName, setEditName] = useState('');
@@ -33,11 +33,19 @@ const PlayerPanel = ({ players, onAddPlayer, onUpdatePlayer, onRemovePlayer, loa
   };
 
   return (
-    <div className="card p-4 h-full flex flex-col">
-      <h3 className="text-lg font-bold text-gray-700 mb-4 flex items-center gap-2">
-        <span className="text-2xl">👥</span>
-        Players ({players.length})
-      </h3>
+    <div className={`${isOverlay ? '' : 'card'} p-4 h-full flex flex-col`}>
+      {!isOverlay && (
+        <h3 className="text-lg font-bold text-gray-700 mb-4 flex items-center gap-2">
+          <span className="text-2xl">👥</span>
+          Players ({players.length})
+        </h3>
+      )}
+
+      {isOverlay && (
+        <div className="flex justify-end mb-2">
+          <span className="panel-count">{players.length} players</span>
+        </div>
+      )}
 
       <div className="flex gap-2 mb-4">
         <input

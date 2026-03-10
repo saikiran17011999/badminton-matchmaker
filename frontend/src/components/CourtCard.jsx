@@ -14,7 +14,7 @@ const CourtCard = ({ match, courtNumber, onPlayerClick, isPlayerSelected, onScor
   };
 
   return (
-    <div className="card overflow-hidden">
+    <div className="court-card court-card--horizontal">
       <div className="bg-gradient-to-r from-green-500 to-green-600 px-4 py-2 flex justify-between items-center">
         <h3 className="text-white font-bold">Court {courtNumber}</h3>
         <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
@@ -24,47 +24,44 @@ const CourtCard = ({ match, courtNumber, onPlayerClick, isPlayerSelected, onScor
         </span>
       </div>
 
-      <div className="court-bg p-4 relative min-h-[200px]">
-        <div className="court-lines rounded-lg"></div>
+      <div className="court-surface court-surface--horizontal">
+        <div className="court-boundary-h"></div>
 
-        <div className="relative z-10 flex flex-col h-full">
-          <div className="flex-1 flex items-center justify-center gap-2 mb-4">
-            {match.team1Players.map(player => (
-              <PlayerCard
-                key={player.id}
-                player={player}
-                onClick={onPlayerClick}
-                isSelected={isPlayerSelected(player.id)}
-                showRating={false}
-                size="small"
-              />
-            ))}
-          </div>
+        <div className="court-team court-team--left">
+          {match.team1Players.map(player => (
+            <PlayerCard
+              key={player.id}
+              player={player}
+              onClick={onPlayerClick}
+              isSelected={isPlayerSelected(player.id)}
+              showRating={false}
+              size="small"
+            />
+          ))}
+        </div>
 
-          <div className="flex items-center justify-center gap-4 py-2">
+        <div className="court-net-vertical">
+          <div className="court-score-horizontal">
             {match.status === 'completed' ? (
-              <div className="bg-white/90 backdrop-blur px-6 py-2 rounded-full font-bold text-xl">
-                {match.team1Score} - {match.team2Score}
-              </div>
+              <span className="font-bold text-lg">{match.team1Score} - {match.team2Score}</span>
             ) : (
-              <div className="bg-white/90 backdrop-blur px-4 py-1 rounded-full font-bold text-orange-500">
-                VS
-              </div>
+              <span className="font-bold text-orange-500">VS</span>
             )}
           </div>
+          <div className="net-label-v">NET</div>
+        </div>
 
-          <div className="flex-1 flex items-center justify-center gap-2 mt-4">
-            {match.team2Players.map(player => (
-              <PlayerCard
-                key={player.id}
-                player={player}
-                onClick={onPlayerClick}
-                isSelected={isPlayerSelected(player.id)}
-                showRating={false}
-                size="small"
-              />
-            ))}
-          </div>
+        <div className="court-team court-team--right">
+          {match.team2Players.map(player => (
+            <PlayerCard
+              key={player.id}
+              player={player}
+              onClick={onPlayerClick}
+              isSelected={isPlayerSelected(player.id)}
+              showRating={false}
+              size="small"
+            />
+          ))}
         </div>
       </div>
 

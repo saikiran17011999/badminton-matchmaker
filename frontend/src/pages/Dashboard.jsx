@@ -141,89 +141,104 @@ const Dashboard = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex gap-6">
-          <div className={`flex-1 ${showPlayerPanel ? 'w-2/3' : 'w-full'}`}>
-            {event.currentRound === 0 ? (
-              <div className="text-center py-16">
-                <div className="text-8xl mb-6">🏸</div>
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                  Ready to Start?
-                </h2>
-                <p className="text-gray-600 mb-8 max-w-md mx-auto">
-                  You have {event.players.length} players registered.
-                  {event.type === 'doubles' && event.players.length < 4 && (
-                    <span className="text-orange-500 block mt-2">
-                      Need at least 4 players for doubles.
-                    </span>
-                  )}
-                  {event.type === 'singles' && event.players.length < 2 && (
-                    <span className="text-orange-500 block mt-2">
-                      Need at least 2 players for singles.
-                    </span>
-                  )}
-                </p>
-                <button
-                  onClick={generateNextRound}
-                  disabled={loading || (event.type === 'doubles' && event.players.length < 4) || (event.type === 'singles' && event.players.length < 2)}
-                  className="btn-primary text-xl px-8 py-4"
-                >
-                  {loading ? 'Generating...' : 'Generate First Round'}
-                </button>
-              </div>
-            ) : (
-              <>
-                <div className="mb-6">
-                  <RoundNavigation
-                    currentRound={event.currentRound}
-                    totalRounds={event.totalRounds}
-                    onPrevious={handlePreviousRound}
-                    onNext={handleNextRound}
-                    onGenerate={generateNextRound}
-                    loading={loading}
-                  />
-                </div>
-
-                {matches.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    {matches.map((match) => (
-                      <CourtCard
-                        key={match.id}
-                        match={match}
-                        courtNumber={match.courtNumber}
-                        onPlayerClick={selectPlayer}
-                        isPlayerSelected={isSelected}
-                        onScoreSubmit={handleScoreSubmit}
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    No matches in this round.
-                  </div>
+        <div className="w-full">
+          {event.currentRound === 0 ? (
+            <div className="text-center py-16">
+              <div className="text-8xl mb-6">🏸</div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                Ready to Start?
+              </h2>
+              <p className="text-gray-600 mb-8 max-w-md mx-auto">
+                You have {event.players.length} players registered.
+                {event.type === 'doubles' && event.players.length < 4 && (
+                  <span className="text-orange-500 block mt-2">
+                    Need at least 4 players for doubles.
+                  </span>
                 )}
-
-                <RestingArea
-                  players={restingPlayers}
-                  onPlayerClick={selectPlayer}
-                  isPlayerSelected={isSelected}
-                />
-              </>
-            )}
-          </div>
-
-          {showPlayerPanel && (
-            <div className="w-80 flex-shrink-0">
-              <PlayerPanel
-                players={event.players}
-                onAddPlayer={handleAddPlayer}
-                onUpdatePlayer={handleUpdatePlayer}
-                onRemovePlayer={handleRemovePlayer}
-                loading={loading}
-              />
+                {event.type === 'singles' && event.players.length < 2 && (
+                  <span className="text-orange-500 block mt-2">
+                    Need at least 2 players for singles.
+                  </span>
+                )}
+              </p>
+              <button
+                onClick={generateNextRound}
+                disabled={loading || (event.type === 'doubles' && event.players.length < 4) || (event.type === 'singles' && event.players.length < 2)}
+                className="btn-primary text-xl px-8 py-4"
+              >
+                {loading ? 'Generating...' : 'Generate First Round'}
+              </button>
             </div>
+          ) : (
+            <>
+              <div className="mb-6">
+                <RoundNavigation
+                  currentRound={event.currentRound}
+                  totalRounds={event.totalRounds}
+                  onPrevious={handlePreviousRound}
+                  onNext={handleNextRound}
+                  onGenerate={generateNextRound}
+                  loading={loading}
+                />
+              </div>
+
+              {matches.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  {matches.map((match) => (
+                    <CourtCard
+                      key={match.id}
+                      match={match}
+                      courtNumber={match.courtNumber}
+                      onPlayerClick={selectPlayer}
+                      isPlayerSelected={isSelected}
+                      onScoreSubmit={handleScoreSubmit}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  No matches in this round.
+                </div>
+              )}
+
+              <RestingArea
+                players={restingPlayers}
+                onPlayerClick={selectPlayer}
+                isPlayerSelected={isSelected}
+              />
+            </>
           )}
         </div>
       </div>
+
+      {showPlayerPanel && (
+        <>
+          <div className="player-panel-backdrop" onClick={() => setShowPlayerPanel(false)} />
+          <div className="player-panel-overlay">
+            <div className="player-panel-overlay-header">
+              <span className="panel-title" style={{ marginBottom: 0 }}>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                </svg>
+                Manage Players
+              </span>
+              <button className="panel-close-btn" onClick={() => setShowPlayerPanel(false)}>
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <PlayerPanel
+              players={event.players}
+              onAddPlayer={handleAddPlayer}
+              onUpdatePlayer={handleUpdatePlayer}
+              onRemovePlayer={handleRemovePlayer}
+              loading={loading}
+              isOverlay={true}
+            />
+          </div>
+        </>
+      )}
 
       <SwapIndicator
         selectedCount={selectedPlayers.length}
