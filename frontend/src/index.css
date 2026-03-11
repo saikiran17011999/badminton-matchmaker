@@ -2119,17 +2119,17 @@ body::after {
   position: absolute;
   left: 0;
   right: 0;
-  height: 88px;
+  height: 70px;
   pointer-events: none;
   z-index: 2;
 }
 .scroll-picker-gradient--top {
   top: 0;
-  background: linear-gradient(to bottom, var(--bg-elevated) 0%, transparent 100%);
+  background: linear-gradient(to bottom, var(--bg-elevated) 0%, rgba(250,247,245,0.7) 50%, transparent 100%);
 }
 .scroll-picker-gradient--bottom {
   bottom: 0;
-  background: linear-gradient(to top, var(--bg-elevated) 0%, transparent 100%);
+  background: linear-gradient(to top, var(--bg-elevated) 0%, rgba(250,247,245,0.7) 50%, transparent 100%);
 }
 
 .scroll-picker-highlight {
@@ -2139,11 +2139,12 @@ body::after {
   right: 4px;
   height: 44px;
   transform: translateY(-50%);
-  background: var(--bg-card);
-  border: 1px solid var(--border-hi);
+  background: transparent;
+  border: 2px solid var(--primary);
   border-radius: 8px;
-  box-shadow: 0 2px 8px var(--shadow-warm);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
   z-index: 1;
+  pointer-events: none;
 }
 
 .scroll-picker-scroll {
