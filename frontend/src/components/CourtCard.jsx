@@ -1,128 +1,107 @@
 import { useState } from 'react';
 import PlayerCard from './PlayerCard';
+import ScrollPicker from './ScrollPicker';
 
 const CourtCard = ({ match, courtNumber, onPlayerClick, isPlayerSelected, onScoreSubmit }) => {
-  const [team1Score, setTeam1Score] = useState('');
-  const [team2Score, setTeam2Score] = useState('');
-  const [showScoreInput, setShowScoreInput] = useState(false);
+  const [team1Score, setTeam1Score] = useState(0);
+  const [team2Score, setTeam2Score] = useState(0);
+  const [showScoreModal, setShowScoreModal] = useState(false);
+
+  // Score values 0-30
+  const scoreValues = Array.from({ length: 31 }, (_, i) => i);
+
+  const handleOpenScoreModal = () => {
+    setTeam1Score(0);
+    setTeam2Score(0);
+    setShowScoreModal(true);
+  };
 
   const handleSubmitScore = () => {
-    if (team1Score !== '' && team2Score !== '') {
-      onScoreSubmit(match.id, parseInt(team1Score), parseInt(team2Score));
-      setShowScoreInput(false);
-    }
+    onScoreSubmit(match.id, team1Score, team2Score);
+    setShowScoreModal(false);
+  };
+
+  const handleCancelScore = () => {
+    setShowScoreModal(false);
   };
 
   const isCompleted = match.status === 'completed';
 
   return (
-    <div className="court-card court-card--horizontal">
+    <>
+      <div className="court-card court-card--horizontal">
 
-      {/* Header */}
-      <div className="court-header">
-        <span className="court-number">
-          <span className="court-number-dot" />
-          Court {courtNumber}
-        </span>
-        <span className={`status-badge ${isCompleted ? 'status-badge--done' : 'status-badge--live'}`}>
-          {isCompleted ? 'Completed' : 'Live'}
-        </span>
-      </div>
-
-      {/* Court surface - Horizontal layout */}
-      <div className="court-surface court-surface--horizontal">
-
-        {/* Court boundary lines */}
-        <div className="court-boundary-h" aria-hidden="true" />
-
-        {/* Team 1 - Left Side */}
-        <div className="court-team court-team--left">
-          <div className="team-label">Team 1</div>
-          <div className="team-players">
-            {match.team1Players.map((player) => (
-              <PlayerCard
-                key={player.id}
-                player={player}
-                onClick={onPlayerClick}
-                isSelected={isPlayerSelected(player.id)}
-                showRating={false}
-                size="medium"
-              />
-            ))}
-          </div>
+        {/* Header */}
+        <div className="court-header">
+          <span className="court-number">
+            <span className="court-number-dot" />
+            Court {courtNumber}
+          </span>
+          <span className={`status-badge ${isCompleted ? 'status-badge--done' : 'status-badge--live'}`}>
+            {isCompleted ? 'Completed' : 'Live'}
+          </span>
         </div>
 
-        {/* Net - Vertical in center */}
-        <div className="court-net-vertical">
-          <span className="net-label-v">NET</span>
-        </div>
+        {/* Court surface - Horizontal layout */}
+        <div className="court-surface court-surface--horizontal">
 
-        {/* Team 2 - Right Side */}
-        <div className="court-team court-team--right">
-          <div className="team-label">Team 2</div>
-          <div className="team-players">
-            {match.team2Players.map((player) => (
-              <PlayerCard
-                key={player.id}
-                player={player}
-                onClick={onPlayerClick}
-                isSelected={isPlayerSelected(player.id)}
-                showRating={false}
-                size="medium"
-              />
-            ))}
-          </div>
-        </div>
+          {/* Court boundary lines */}
+          <div className="court-boundary-h" aria-hidden="true" />
 
-        {/* Score overlay when completed */}
-        {isCompleted && (
-          <div className="court-score-horizontal">
-            <span className="score-team">{match.team1Score}</span>
-            <span className="score-separator">-</span>
-            <span className="score-team">{match.team2Score}</span>
-          </div>
-        )}
-      </div>
-
-      {/* Score input footer */}
-      {!isCompleted && (
-        <div className="score-footer">
-          {showScoreInput ? (
-            <div className="score-inputs">
-              <input
-                type="number"
-                min="0"
-                value={team1Score}
-                onChange={(e) => setTeam1Score(e.target.value)}
-                placeholder="T1"
-                className="score-input"
-              />
-              <span className="score-divider">-</span>
-              <input
-                type="number"
-                min="0"
-                value={team2Score}
-                onChange={(e) => setTeam2Score(e.target.value)}
-                placeholder="T2"
-                className="score-input"
-              />
-              <button
-                onClick={handleSubmitScore}
-                className="btn-primary py-1.5 px-4 text-sm"
-                style={{ borderRadius: '7px', minWidth: 0 }}
-              >
-                Save
-              </button>
-              <button
-                onClick={() => setShowScoreInput(false)}
-                className="score-cancel"
-              >
-                X
-              </button>
+          {/* Team 1 - Left Side */}
+          <div className="court-team court-team--left">
+            <div className="team-label">Team 1</div>
+            <div className="team-players">
+              {match.team1Players.map((player) => (
+                <PlayerCard
+                  key={player.id}
+                  player={player}
+                  onClick={onPlayerClick}
+                  isSelected={isPlayerSelected(player.id)}
+                  showRating={false}
+                  size="medium"
+                />
+              ))}
             </div>
-          ) : (
+          </div>
+
+          {/* Net - Vertical in center */}
+          <div className="court-net-vertical">
+            <span className="net-label-v">NET</span>
+          </div>
+
+          {/* Team 2 - Right Side */}
+          <div className="court-team court-team--right">
+            <div className="team-label">Team 2</div>
+            <div className="team-players">
+              {match.team2Players.map((player) => (
+                <PlayerCard
+                  key={player.id}
+                  player={player}
+                  onClick={onPlayerClick}
+                  isSelected={isPlayerSelected(player.id)}
+                  showRating={false}
+                  size="medium"
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Score overlay when completed */}
+          {isCompleted && (
+            <div className="court-score-horizontal">
+              <span className="score-team">{match.team1Score}</span>
+              <span className="score-separator">-</span>
+              <span className="score-team">{match.team2Score}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Score button footer */}
+        {!isCompleted && (
+          <div className="score-footer">
             <button
-              onClick={() => setShowScoreInput(true)}
+              onClick={handleOpenScoreModal}
               className="btn-secondary w-full justify-center"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -131,10 +110,62 @@ const CourtCard = ({ match, courtNumber, onPlayerClick, isPlayerSelected, onScor
               </svg>
               Enter Score
             </button>
-          )}
-        </div>
+          </div>
+        )}
+      </div>
+
+      {/* Score Modal with Blur Backdrop */}
+      {showScoreModal && (
+        <>
+          {/* Backdrop with blur */}
+          <div className="score-modal-backdrop" onClick={handleCancelScore} />
+
+          {/* Modal */}
+          <div className="score-modal">
+            <div className="score-modal-header">
+              <h3 className="score-modal-title">Enter Score</h3>
+              <span className="score-modal-court">Court {courtNumber}</span>
+            </div>
+
+            <div className="score-modal-body">
+              {/* Team 1 Score */}
+              <div className="score-modal-team">
+                <span className="score-modal-team-label">Team 1</span>
+                <ScrollPicker
+                  values={scoreValues}
+                  selectedValue={team1Score}
+                  onChange={setTeam1Score}
+                />
+              </div>
+
+              {/* Separator */}
+              <div className="score-modal-separator">
+                <span>-</span>
+              </div>
+
+              {/* Team 2 Score */}
+              <div className="score-modal-team">
+                <span className="score-modal-team-label">Team 2</span>
+                <ScrollPicker
+                  values={scoreValues}
+                  selectedValue={team2Score}
+                  onChange={setTeam2Score}
+                />
+              </div>
+            </div>
+
+            <div className="score-modal-footer">
+              <button onClick={handleCancelScore} className="score-modal-cancel">
+                Cancel
+              </button>
+              <button onClick={handleSubmitScore} className="score-modal-submit">
+                Save Score
+              </button>
+            </div>
+          </div>
+        </>
       )}
-    </div>
+    </>
   );
 };
 
