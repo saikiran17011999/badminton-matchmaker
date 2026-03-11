@@ -1,11 +1,13 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 const FeedbackPage = () => {
   const navigate = useNavigate();
-  const [feedbackType, setFeedbackType] = useState('text'); // 'text' or 'voice'
+  const { t } = useLanguage();
+  const [feedbackType, setFeedbackType] = useState('text');
   const [textFeedback, setTextFeedback] = useState('');
   const [email, setEmail] = useState('');
   const [isRecording, setIsRecording] = useState(false);
@@ -17,7 +19,6 @@ const FeedbackPage = () => {
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
 
-  // Start voice recording
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -45,7 +46,6 @@ const FeedbackPage = () => {
     }
   };
 
-  // Stop voice recording
   const stopRecording = () => {
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
@@ -53,13 +53,11 @@ const FeedbackPage = () => {
     }
   };
 
-  // Delete recording
   const deleteRecording = () => {
     setAudioBlob(null);
     setAudioUrl(null);
   };
 
-  // Submit feedback
   const handleSubmit = async () => {
     if (feedbackType === 'text' && !textFeedback.trim()) {
       alert('Please enter your feedback');
@@ -116,7 +114,7 @@ const FeedbackPage = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        <h1 className="feedback-title">Feedback</h1>
+        <h1 className="feedback-title">{t('feedback.title')}</h1>
         <div className="w-10" />
       </header>
 
@@ -131,7 +129,7 @@ const FeedbackPage = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
             </svg>
-            Write
+            {t('feedback.write')}
           </button>
           <button
             className={`feedback-type-btn ${feedbackType === 'voice' ? 'feedback-type-btn--active' : ''}`}
@@ -141,23 +139,21 @@ const FeedbackPage = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                 d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
             </svg>
-            Record
+            {t('feedback.record')}
           </button>
         </div>
 
         {feedbackType === 'text' ? (
-          /* Text Feedback */
           <div className="feedback-text-section">
             <textarea
               value={textFeedback}
               onChange={(e) => setTextFeedback(e.target.value)}
-              placeholder="Share your thoughts, suggestions, or report issues..."
+              placeholder={t('feedback.placeholder')}
               className="feedback-textarea"
               rows={6}
             />
           </div>
         ) : (
-          /* Voice Feedback */
           <div className="feedback-voice-section">
             {!audioUrl ? (
               <button
@@ -177,7 +173,7 @@ const FeedbackPage = () => {
                   )}
                 </div>
                 <span className="feedback-record-text">
-                  {isRecording ? 'Tap to Stop' : 'Tap to Record'}
+                  {isRecording ? t('feedback.tapToStop') : t('feedback.tapToRecord')}
                 </span>
                 {isRecording && (
                   <span className="feedback-recording-indicator" />
@@ -191,7 +187,7 @@ const FeedbackPage = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                       d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
-                  Delete & Re-record
+                  {t('feedback.deleteReRecord')}
                 </button>
               </div>
             )}
@@ -201,14 +197,14 @@ const FeedbackPage = () => {
         {/* Email (Optional) */}
         <div className="feedback-email-section">
           <label className="feedback-email-label">
-            Email (optional)
-            <span className="feedback-email-hint">For follow-up if needed</span>
+            {t('feedback.email')}
+            <span className="feedback-email-hint">{t('feedback.emailHint')}</span>
           </label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="your@email.com"
+            placeholder={t('feedback.emailPlaceholder')}
             className="feedback-email-input"
           />
         </div>
@@ -221,7 +217,7 @@ const FeedbackPage = () => {
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Thank you for your feedback!
+                {t('feedback.thankYou')}
               </>
             ) : (
               <>
@@ -229,7 +225,7 @@ const FeedbackPage = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                     d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                Failed to submit. Please try again.
+                {t('feedback.failed')}
               </>
             )}
           </div>
@@ -248,7 +244,7 @@ const FeedbackPage = () => {
                 <path className="opacity-75" fill="currentColor"
                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
               </svg>
-              Sending...
+              {t('feedback.sending')}
             </>
           ) : (
             <>
@@ -256,7 +252,7 @@ const FeedbackPage = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                   d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
               </svg>
-              Send Feedback
+              {t('feedback.sendFeedback')}
             </>
           )}
         </button>

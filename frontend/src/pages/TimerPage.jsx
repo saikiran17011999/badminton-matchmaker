@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ScrollPicker from '../components/ScrollPicker';
+import { useLanguage } from '../context/LanguageContext';
 
 const TimerPage = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [timerType, setTimerType] = useState('repeatable'); // 'repeatable' or 'single'
 
   // Timer settings
@@ -179,7 +181,7 @@ const TimerPage = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        <h1 className="timer-title">Timer</h1>
+        <h1 className="timer-title">{t('timer.title')}</h1>
         <div className="w-10" /> {/* Spacer */}
       </header>
 
@@ -192,13 +194,13 @@ const TimerPage = () => {
               className={`timer-type-btn ${timerType === 'repeatable' ? 'timer-type-btn--active' : ''}`}
               onClick={() => setTimerType('repeatable')}
             >
-              Repeatable
+              {t('timer.repeatable')}
             </button>
             <button
               className={`timer-type-btn ${timerType === 'single' ? 'timer-type-btn--active' : ''}`}
               onClick={() => setTimerType('single')}
             >
-              Single
+              {t('timer.single')}
             </button>
           </div>
 
@@ -207,53 +209,53 @@ const TimerPage = () => {
             <div className="timer-settings">
               {/* Training Time */}
               <div className="timer-setting-group">
-                <h3 className="timer-setting-title">Training Time</h3>
+                <h3 className="timer-setting-title">{t('timer.trainingTime')}</h3>
                 <div className="timer-pickers">
                   <ScrollPicker
                     values={minutes}
                     selectedValue={trainingMinutes}
                     onChange={setTrainingMinutes}
-                    label="min"
+                    label={t('timer.min')}
                   />
                   <span className="timer-picker-separator">:</span>
                   <ScrollPicker
                     values={seconds}
                     selectedValue={trainingSeconds}
                     onChange={setTrainingSeconds}
-                    label="sec"
+                    label={t('timer.sec')}
                   />
                 </div>
               </div>
 
               {/* Rest Time */}
               <div className="timer-setting-group">
-                <h3 className="timer-setting-title">Rest Time</h3>
+                <h3 className="timer-setting-title">{t('timer.restTime')}</h3>
                 <div className="timer-pickers">
                   <ScrollPicker
                     values={minutes}
                     selectedValue={restMinutes}
                     onChange={setRestMinutes}
-                    label="min"
+                    label={t('timer.min')}
                   />
                   <span className="timer-picker-separator">:</span>
                   <ScrollPicker
                     values={seconds}
                     selectedValue={restSeconds}
                     onChange={setRestSeconds}
-                    label="sec"
+                    label={t('timer.sec')}
                   />
                 </div>
               </div>
 
               {/* Repetitions */}
               <div className="timer-setting-group">
-                <h3 className="timer-setting-title">Repetitions</h3>
+                <h3 className="timer-setting-title">{t('timer.repetitions')}</h3>
                 <div className="timer-pickers timer-pickers--single">
                   <ScrollPicker
                     values={reps}
                     selectedValue={repetitions}
                     onChange={setRepetitions}
-                    label="rounds"
+                    label={t('timer.rounds')}
                   />
                 </div>
               </div>
@@ -262,20 +264,20 @@ const TimerPage = () => {
             /* Single Timer Settings */
             <div className="timer-settings">
               <div className="timer-setting-group">
-                <h3 className="timer-setting-title">Duration</h3>
+                <h3 className="timer-setting-title">{t('timer.duration')}</h3>
                 <div className="timer-pickers">
                   <ScrollPicker
                     values={minutes}
                     selectedValue={singleMinutes}
                     onChange={setSingleMinutes}
-                    label="min"
+                    label={t('timer.min')}
                   />
                   <span className="timer-picker-separator">:</span>
                   <ScrollPicker
                     values={seconds}
                     selectedValue={singleSeconds}
                     onChange={setSingleSeconds}
-                    label="sec"
+                    label={t('timer.sec')}
                   />
                 </div>
               </div>
@@ -287,7 +289,7 @@ const TimerPage = () => {
             <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
               <path d="M8 5v14l11-7z" />
             </svg>
-            Start Timer
+            {t('timer.startTimer')}
           </button>
         </div>
       ) : (
@@ -324,10 +326,10 @@ const TimerPage = () => {
               {timerType === 'repeatable' && (
                 <>
                   <span className="timer-phase">
-                    {currentPhase === 'training' ? 'TRAINING' : 'REST'}
+                    {currentPhase === 'training' ? t('timer.training') : t('timer.rest')}
                   </span>
                   <span className="timer-round">
-                    Round {currentRound} / {repetitions}
+                    {t('timer.roundOf')} {currentRound} / {repetitions}
                   </span>
                 </>
               )}

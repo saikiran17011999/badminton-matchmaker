@@ -1,0 +1,126 @@
+{
+  "app": {
+    "title": "バドミントン マッチメーカー",
+    "loading": "イベントを読み込み中...",
+    "goBack": "戻る"
+  },
+  "nav": {
+    "menu": "メニュー",
+    "home": "ホーム",
+    "timer": "タイマー",
+    "feedback": "フィードバック",
+    "combos": "コンボ",
+    "version": "v1.0.0"
+  },
+  "dashboard": {
+    "players": "選手",
+    "hide": "隠す",
+    "courts": "コート",
+    "doubles": "ダブルス",
+    "singles": "シングルス",
+    "managePlayers": "選手管理"
+  },
+  "court": {
+    "court": "コート",
+    "team1": "チーム1",
+    "team2": "チーム2",
+    "live": "試合中",
+    "completed": "完了",
+    "enterScore": "スコア入力",
+    "saveScore": "保存",
+    "cancel": "キャンセル",
+    "net": "ネット",
+    "noMatches": "このラウンドに試合はありません"
+  },
+  "round": {
+    "round": "ラウンド",
+    "previous": "前へ",
+    "next": "次へ",
+    "generate": "次のラウンドを生成"
+  },
+  "start": {
+    "readyToStart": "準備はいいですか？",
+    "playersRegistered": "人の選手が登録されています。",
+    "needDoublesPlayers": "ダブルスには4人以上の選手が必要です。",
+    "needSinglesPlayers": "シングルスには2人以上の選手が必要です。",
+    "generating": "生成中...",
+    "generateFirstRound": "最初のラウンドを生成"
+  },
+  "player": {
+    "addPlayer": "追加",
+    "playerName": "選手名...",
+    "noPlayers": "選手がいません。",
+    "addNamesToStart": "上に名前を追加して始めましょう。",
+    "save": "保存",
+    "edit": "編集",
+    "remove": "削除",
+    "resting": "休憩中の選手"
+  },
+  "swap": {
+    "selectPlayer": "もう1人選択してください",
+    "swapPlayers": "選手を交換",
+    "cancel": "キャンセル"
+  },
+  "timer": {
+    "title": "タイマー",
+    "repeatable": "繰り返し",
+    "single": "シングル",
+    "trainingTime": "トレーニング時間",
+    "restTime": "休憩時間",
+    "repetitions": "繰り返し回数",
+    "duration": "時間",
+    "min": "分",
+    "sec": "秒",
+    "rounds": "回",
+    "startTimer": "タイマー開始",
+    "training": "トレーニング",
+    "rest": "休憩",
+    "roundOf": "ラウンド"
+  },
+  "feedback": {
+    "title": "フィードバック",
+    "write": "書く",
+    "record": "録音",
+    "placeholder": "ご意見、ご提案、または問題をお知らせください...",
+    "tapToRecord": "タップして録音",
+    "tapToStop": "タップして停止",
+    "deleteReRecord": "削除して再録音",
+    "email": "メール（任意）",
+    "emailHint": "フォローアップが必要な場合",
+    "emailPlaceholder": "your@email.com",
+    "sendFeedback": "フィードバックを送信",
+    "sending": "送信中...",
+    "thankYou": "フィードバックありがとうございます！",
+    "failed": "送信に失敗しました。もう一度お試しください。"
+  },
+  "combos": {
+    "title": "コンボ",
+    "selectCategory": "トレーニングカテゴリーを選択",
+    "warmup": "ウォームアップ",
+    "warmupDesc": "試合前のストレッチと運動",
+    "singles": "シングルス",
+    "singlesDesc": "シングルス用のショットコンビネーション",
+    "doubles": "ダブルス",
+    "doublesDesc": "チーム戦略とローテーション",
+    "comingSoon": "さらなる機能を準備中..."
+  },
+  "setup": {
+    "createEvent": "新しいイベントを作成",
+    "tagline": "バドミントンイベントの公平な試合を自動生成",
+    "eventType": "イベントタイプ",
+    "doublesDesc": "1コート4人",
+    "singlesDesc": "1コート2人",
+    "numberOfCourts": "コート数",
+    "courtsLabel": "コート",
+    "addPlayers": "選手を追加",
+    "addPlayersHint": "ダブルスは4人以上、シングルスは2人以上追加してください",
+    "playerAdded": "人の選手が追加されました",
+    "addButton": "追加",
+    "startEvent": "イベント開始",
+    "creatingEvent": "作成中..."
+  },
+  "resting": {
+    "title": "休憩中",
+    "noResting": "休憩中の選手はいません"
+  }
+}

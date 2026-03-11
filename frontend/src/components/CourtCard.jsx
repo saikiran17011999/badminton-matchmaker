@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import PlayerCard from './PlayerCard';
 import ScrollPicker from './ScrollPicker';
+import { useLanguage } from '../context/LanguageContext';
 
 const CourtCard = ({ match, courtNumber, onPlayerClick, isPlayerSelected, onScoreSubmit }) => {
+  const { t } = useLanguage();
   const [team1Score, setTeam1Score] = useState(0);
   const [team2Score, setTeam2Score] = useState(0);
   const [showScoreModal, setShowScoreModal] = useState(false);
@@ -35,10 +37,10 @@ const CourtCard = ({ match, courtNumber, onPlayerClick, isPlayerSelected, onScor
         <div className="court-header">
           <span className="court-number">
             <span className="court-number-dot" />
-            Court {courtNumber}
+            {t('court.court')} {courtNumber}
           </span>
           <span className={`status-badge ${isCompleted ? 'status-badge--done' : 'status-badge--live'}`}>
-            {isCompleted ? 'Completed' : 'Live'}
+            {isCompleted ? t('court.completed') : t('court.live')}
           </span>
         </div>
 
@@ -50,7 +52,7 @@ const CourtCard = ({ match, courtNumber, onPlayerClick, isPlayerSelected, onScor
 
           {/* Team 1 - Left Side */}
           <div className="court-team court-team--left">
-            <div className="team-label">Team 1</div>
+            <div className="team-label">{t('court.team1')}</div>
             <div className="team-players">
               {match.team1Players.map((player) => (
                 <PlayerCard
@@ -67,12 +69,12 @@ const CourtCard = ({ match, courtNumber, onPlayerClick, isPlayerSelected, onScor
 
           {/* Net - Vertical in center */}
           <div className="court-net-vertical">
-            <span className="net-label-v">NET</span>
+            <span className="net-label-v">{t('court.net')}</span>
           </div>
 
           {/* Team 2 - Right Side */}
           <div className="court-team court-team--right">
-            <div className="team-label">Team 2</div>
+            <div className="team-label">{t('court.team2')}</div>
             <div className="team-players">
               {match.team2Players.map((player) => (
                 <PlayerCard
@@ -108,7 +110,7 @@ const CourtCard = ({ match, courtNumber, onPlayerClick, isPlayerSelected, onScor
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                   d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
-              Enter Score
+              {t('court.enterScore')}
             </button>
           </div>
         )}
@@ -123,14 +125,14 @@ const CourtCard = ({ match, courtNumber, onPlayerClick, isPlayerSelected, onScor
           {/* Modal */}
           <div className="score-modal">
             <div className="score-modal-header">
-              <h3 className="score-modal-title">Enter Score</h3>
-              <span className="score-modal-court">Court {courtNumber}</span>
+              <h3 className="score-modal-title">{t('court.enterScore')}</h3>
+              <span className="score-modal-court">{t('court.court')} {courtNumber}</span>
             </div>
 
             <div className="score-modal-body">
               {/* Team 1 Score */}
               <div className="score-modal-team">
-                <span className="score-modal-team-label">Team 1</span>
+                <span className="score-modal-team-label">{t('court.team1')}</span>
                 <ScrollPicker
                   values={scoreValues}
                   selectedValue={team1Score}
@@ -145,7 +147,7 @@ const CourtCard = ({ match, courtNumber, onPlayerClick, isPlayerSelected, onScor
 
               {/* Team 2 Score */}
               <div className="score-modal-team">
-                <span className="score-modal-team-label">Team 2</span>
+                <span className="score-modal-team-label">{t('court.team2')}</span>
                 <ScrollPicker
                   values={scoreValues}
                   selectedValue={team2Score}
@@ -156,10 +158,10 @@ const CourtCard = ({ match, courtNumber, onPlayerClick, isPlayerSelected, onScor
 
             <div className="score-modal-footer">
               <button onClick={handleCancelScore} className="score-modal-cancel">
-                Cancel
+                {t('court.cancel')}
               </button>
               <button onClick={handleSubmitScore} className="score-modal-submit">
-                Save Score
+                {t('court.saveScore')}
               </button>
             </div>
           </div>

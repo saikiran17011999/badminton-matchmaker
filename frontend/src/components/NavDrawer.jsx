@@ -1,19 +1,20 @@
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
 
 const NavDrawer = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useLanguage();
 
   const menuItems = [
-    { id: 'home', label: 'Home', icon: 'home', path: null }, // null means current dashboard
-    { id: 'timer', label: 'Timer', icon: 'timer', path: 'timer' },
-    { id: 'feedback', label: 'Feedback', icon: 'feedback', path: 'feedback' },
-    { id: 'combos', label: 'Combos', icon: 'combos', path: 'combos' },
+    { id: 'home', labelKey: 'nav.home', icon: 'home', path: null },
+    { id: 'timer', labelKey: 'nav.timer', icon: 'timer', path: 'timer' },
+    { id: 'feedback', labelKey: 'nav.feedback', icon: 'feedback', path: 'feedback' },
+    { id: 'combos', labelKey: 'nav.combos', icon: 'combos', path: 'combos' },
   ];
 
   const handleNavigation = (item) => {
     if (item.path === null) {
-      // Home - just close drawer, stay on dashboard
       onClose();
     } else {
       navigate(`/${item.path}`);
@@ -71,7 +72,7 @@ const NavDrawer = ({ isOpen, onClose }) => {
         {/* Header */}
         <div className="nav-drawer-header">
           <span className="nav-drawer-logo">🏸</span>
-          <span className="nav-drawer-title">Menu</span>
+          <span className="nav-drawer-title">{t('nav.menu')}</span>
           <button className="nav-drawer-close" onClick={onClose}>
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -88,7 +89,7 @@ const NavDrawer = ({ isOpen, onClose }) => {
               className="nav-drawer-item"
             >
               <span className="nav-drawer-icon">{getIcon(item.icon)}</span>
-              <span className="nav-drawer-label">{item.label}</span>
+              <span className="nav-drawer-label">{t(item.labelKey)}</span>
               <svg className="w-4 h-4 nav-drawer-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
@@ -98,8 +99,8 @@ const NavDrawer = ({ isOpen, onClose }) => {
 
         {/* Footer */}
         <div className="nav-drawer-footer">
-          <p>Badminton Matchmaker</p>
-          <p className="text-xs opacity-60">v1.0.0</p>
+          <p>{t('app.title')}</p>
+          <p className="text-xs opacity-60">{t('nav.version')}</p>
         </div>
       </div>
     </>

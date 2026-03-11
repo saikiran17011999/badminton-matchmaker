@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEvent } from '../context/EventContext';
+import { useLanguage } from '../context/LanguageContext';
 import { useSwap } from '../hooks/useSwap';
 import { addPlayer, updatePlayer, removePlayer } from '../services/playerService';
 import { updateMatchScore } from '../services/matchService';
@@ -15,6 +16,7 @@ const Dashboard = () => {
   const { eventId } = useParams();
   const navigate = useNavigate();
   const { event, loading, error, fetchEvent, generateNextRound, goToRound } = useEvent();
+  const { language, toggleLanguage, t } = useLanguage();
   const [showPlayerPanel, setShowPlayerPanel] = useState(false);
   const [showNavDrawer, setShowNavDrawer] = useState(false);
 
@@ -81,7 +83,7 @@ const Dashboard = () => {
     return (
       <div className="loading-screen">
         <span className="loading-shuttle">🏸</span>
-        <p className="loading-text">Loading event…</p>
+        <p className="loading-text">{t('app.loading')}</p>
       </div>
     );
   }
@@ -95,7 +97,7 @@ const Dashboard = () => {
           {error}
         </p>
         <button onClick={() => navigate('/')} className="btn-primary">
-          ← Go Back
+          ← {t('app.goBack')}
         </button>
       </div>
     );
@@ -105,7 +107,7 @@ const Dashboard = () => {
 
   const matches = event.currentRoundData?.matches || [];
   const restingPlayers = event.currentRoundData?.restingPlayers || [];
-  const typeCap = event.type.charAt(0).toUpperCase() + event.type.slice(1);
+  const typeCap = event.type === 'doubles' ? t('dashboard.doubles') : t('dashboard.singles');
 
   /* ── Premium UI ── */
   return (
@@ -131,7 +133,7 @@ const Dashboard = () => {
             {/* Brand */}
             <span style={{ fontSize: '1.8rem', lineHeight: 1 }}>🏸</span>
             <div>
-              <h1 className="header-title">Badminton Matchmaker</h1>
+              <h1 className="header-title">{t('app.title')}</h1>
               <div className="flex items-center gap-2 mt-0.5">
                 <span className="header-badge">{typeCap}</span>
                 <span className="header-badge">
@@ -139,30 +141,46 @@ const Dashboard = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                       d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                   </svg>
-                  {event.numCourts} Courts
+                  {event.numCourts} {t('dashboard.courts')}
                 </span>
                 <span className="header-badge">
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                       d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
-                  {event.players.length} Players
+                  {event.players.length} {t('dashboard.players')}
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Manage players toggle */}
-          <button
-            onClick={() => setShowPlayerPanel(!showPlayerPanel)}
-            className={`manage-btn ${showPlayerPanel ? 'manage-btn--active' : ''}`}
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-            </svg>
-            {showPlayerPanel ? 'Hide' : 'Players'}
-          </button>
+          {/* Right side buttons */}
+          <div className="flex items-center gap-2">
+            {/* Language toggle */}
+            <button
+              onClick={toggleLanguage}
+              className="manage-btn"
+              aria-label="Toggle language"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+              </svg>
+              {language === 'en' ? '日本語' : 'EN'}
+            </button>
+
+            {/* Manage players toggle */}
+            <button
+              onClick={() => setShowPlayerPanel(!showPlayerPanel)}
+              className={`manage-btn ${showPlayerPanel ? 'manage-btn--active' : ''}`}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+              </svg>
+              {showPlayerPanel ? t('dashboard.hide') : t('dashboard.players')}
+            </button>
+          </div>
         </div>
       </header>
 
@@ -176,19 +194,18 @@ const Dashboard = () => {
           {event.currentRound === 0 ? (
               <div className="start-state">
                 <span className="start-state-icon">🏸</span>
-                <h2 className="start-state-title">Ready to Start?</h2>
+                <h2 className="start-state-title">{t('start.readyToStart')}</h2>
                 <p className="start-state-desc">
-                  You have{' '}
                   <strong style={{ color: 'var(--primary)' }}>{event.players.length}</strong>{' '}
-                  players registered.
+                  {t('start.playersRegistered')}
                   {event.type === 'doubles' && event.players.length < 4 && (
                     <span className="start-state-warn">
-                      ⚠ Need at least 4 players for doubles.
+                      ⚠ {t('start.needDoublesPlayers')}
                     </span>
                   )}
                   {event.type === 'singles' && event.players.length < 2 && (
                     <span className="start-state-warn">
-                      ⚠ Need at least 2 players for singles.
+                      ⚠ {t('start.needSinglesPlayers')}
                     </span>
                   )}
                 </p>
@@ -209,10 +226,10 @@ const Dashboard = () => {
                         <path className="opacity-75" fill="currentColor"
                           d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                       </svg>
-                      Generating…
+                      {t('start.generating')}
                     </>
                   ) : (
-                    '⚡ Generate First Round'
+                    <>⚡ {t('start.generateFirstRound')}</>
                   )}
                 </button>
               </div>
@@ -253,7 +270,7 @@ const Dashboard = () => {
                     className="text-center py-10"
                     style={{ color: 'var(--text-2)', fontFamily: 'Rajdhani', fontSize: '1rem', letterSpacing: '.1em' }}
                   >
-                    NO MATCHES IN THIS ROUND
+                    {t('court.noMatches')}
                   </div>
                 )}
 
@@ -284,7 +301,7 @@ const Dashboard = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                     d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                Manage Players
+                {t('dashboard.managePlayers')}
               </span>
               <button
                 className="panel-close-btn"

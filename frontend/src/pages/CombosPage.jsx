@@ -1,13 +1,15 @@
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
 
 const CombosPage = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const comboTypes = [
     {
       id: 'warmup',
-      title: 'Warmup',
-      description: 'Pre-game stretching and exercises',
+      titleKey: 'combos.warmup',
+      descKey: 'combos.warmupDesc',
       icon: (
         <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
@@ -18,8 +20,8 @@ const CombosPage = () => {
     },
     {
       id: 'singles',
-      title: 'Singles',
-      description: 'Shot combinations for singles play',
+      titleKey: 'combos.singles',
+      descKey: 'combos.singlesDesc',
       icon: (
         <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
@@ -30,8 +32,8 @@ const CombosPage = () => {
     },
     {
       id: 'doubles',
-      title: 'Doubles',
-      description: 'Team strategies and rotations',
+      titleKey: 'combos.doubles',
+      descKey: 'combos.doublesDesc',
       icon: (
         <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
@@ -43,9 +45,7 @@ const CombosPage = () => {
   ];
 
   const handleComboClick = (comboId) => {
-    // Placeholder for future navigation
     console.log(`Selected combo: ${comboId}`);
-    // navigate(`/combos/${comboId}`);
   };
 
   return (
@@ -57,12 +57,12 @@ const CombosPage = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        <h1 className="combos-title">Combos</h1>
+        <h1 className="combos-title">{t('combos.title')}</h1>
         <div className="w-10" />
       </header>
 
       <div className="combos-content">
-        <p className="combos-subtitle">Select a training category</p>
+        <p className="combos-subtitle">{t('combos.selectCategory')}</p>
 
         <div className="combos-grid">
           {comboTypes.map((combo) => (
@@ -75,8 +75,8 @@ const CombosPage = () => {
               <div className="combo-icon">
                 {combo.icon}
               </div>
-              <h3 className="combo-title">{combo.title}</h3>
-              <p className="combo-description">{combo.description}</p>
+              <h3 className="combo-title">{t(combo.titleKey)}</h3>
+              <p className="combo-description">{t(combo.descKey)}</p>
               <div className="combo-arrow">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -87,7 +87,7 @@ const CombosPage = () => {
         </div>
 
         <p className="combos-coming-soon">
-          More features coming soon...
+          {t('combos.comingSoon')}
         </p>
       </div>
     </div>

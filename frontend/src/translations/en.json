@@ -1,0 +1,126 @@
+{
+  "app": {
+    "title": "Badminton Matchmaker",
+    "loading": "Loading event...",
+    "goBack": "Go Back"
+  },
+  "nav": {
+    "menu": "Menu",
+    "home": "Home",
+    "timer": "Timer",
+    "feedback": "Feedback",
+    "combos": "Combos",
+    "version": "v1.0.0"
+  },
+  "dashboard": {
+    "players": "Players",
+    "hide": "Hide",
+    "courts": "Courts",
+    "doubles": "Doubles",
+    "singles": "Singles",
+    "managePlayers": "Manage Players"
+  },
+  "court": {
+    "court": "Court",
+    "team1": "Team 1",
+    "team2": "Team 2",
+    "live": "Live",
+    "completed": "Completed",
+    "enterScore": "Enter Score",
+    "saveScore": "Save Score",
+    "cancel": "Cancel",
+    "net": "NET",
+    "noMatches": "NO MATCHES IN THIS ROUND"
+  },
+  "round": {
+    "round": "Round",
+    "previous": "Previous",
+    "next": "Next",
+    "generate": "Generate Next Round"
+  },
+  "start": {
+    "readyToStart": "Ready to Start?",
+    "playersRegistered": "players registered.",
+    "needDoublesPlayers": "Need at least 4 players for doubles.",
+    "needSinglesPlayers": "Need at least 2 players for singles.",
+    "generating": "Generating...",
+    "generateFirstRound": "Generate First Round"
+  },
+  "player": {
+    "addPlayer": "Add",
+    "playerName": "Player name...",
+    "noPlayers": "No players yet.",
+    "addNamesToStart": "Add names above to get started.",
+    "save": "Save",
+    "edit": "Edit",
+    "remove": "Remove",
+    "resting": "Resting Players"
+  },
+  "swap": {
+    "selectPlayer": "Select 1 more player",
+    "swapPlayers": "Swap Players",
+    "cancel": "Cancel"
+  },
+  "timer": {
+    "title": "Timer",
+    "repeatable": "Repeatable",
+    "single": "Single",
+    "trainingTime": "Training Time",
+    "restTime": "Rest Time",
+    "repetitions": "Repetitions",
+    "duration": "Duration",
+    "min": "min",
+    "sec": "sec",
+    "rounds": "rounds",
+    "startTimer": "Start Timer",
+    "training": "TRAINING",
+    "rest": "REST",
+    "roundOf": "Round"
+  },
+  "feedback": {
+    "title": "Feedback",
+    "write": "Write",
+    "record": "Record",
+    "placeholder": "Share your thoughts, suggestions, or report issues...",
+    "tapToRecord": "Tap to Record",
+    "tapToStop": "Tap to Stop",
+    "deleteReRecord": "Delete & Re-record",
+    "email": "Email (optional)",
+    "emailHint": "For follow-up if needed",
+    "emailPlaceholder": "your@email.com",
+    "sendFeedback": "Send Feedback",
+    "sending": "Sending...",
+    "thankYou": "Thank you for your feedback!",
+    "failed": "Failed to submit. Please try again."
+  },
+  "combos": {
+    "title": "Combos",
+    "selectCategory": "Select a training category",
+    "warmup": "Warmup",
+    "warmupDesc": "Pre-game stretching and exercises",
+    "singles": "Singles",
+    "singlesDesc": "Shot combinations for singles play",
+    "doubles": "Doubles",
+    "doublesDesc": "Team strategies and rotations",
+    "comingSoon": "More features coming soon..."
+  },
+  "setup": {
+    "createEvent": "Create New Event",
+    "tagline": "Create fair matches automatically for your badminton event",
+    "eventType": "Event Type",
+    "doublesDesc": "4 players per court",
+    "singlesDesc": "2 players per court",
+    "numberOfCourts": "Number of Courts",
+    "courtsLabel": "courts",
+    "addPlayers": "Add Players",
+    "addPlayersHint": "Add at least 4 players for doubles or 2 for singles",
+    "playerAdded": "players added",
+    "addButton": "Add",
+    "startEvent": "Start Event",
+    "creatingEvent": "Creating..."
+  },
+  "resting": {
+    "title": "Resting",
+    "noResting": "No resting players"
+  }
+}
