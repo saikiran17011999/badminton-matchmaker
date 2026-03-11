@@ -9,12 +9,14 @@ import RestingArea from '../components/RestingArea';
 import RoundNavigation from '../components/RoundNavigation';
 import PlayerPanel from '../components/PlayerPanel';
 import SwapIndicator from '../components/SwapIndicator';
+import NavDrawer from '../components/NavDrawer';
 
 const Dashboard = () => {
   const { eventId } = useParams();
   const navigate = useNavigate();
   const { event, loading, error, fetchEvent, generateNextRound, goToRound } = useEvent();
   const [showPlayerPanel, setShowPlayerPanel] = useState(false);
+  const [showNavDrawer, setShowNavDrawer] = useState(false);
 
   /* ── Logic unchanged ── */
   const {
@@ -113,8 +115,20 @@ const Dashboard = () => {
       <header className="dashboard-header sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
 
-          {/* Brand */}
+          {/* Left side: Hamburger + Brand */}
           <div className="flex items-center gap-3">
+            {/* Hamburger menu */}
+            <button
+              onClick={() => setShowNavDrawer(true)}
+              className="hamburger-btn"
+              aria-label="Open menu"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+
+            {/* Brand */}
             <span style={{ fontSize: '1.8rem', lineHeight: 1 }}>🏸</span>
             <div>
               <h1 className="header-title">Badminton Matchmaker</h1>
@@ -299,6 +313,12 @@ const Dashboard = () => {
         onSwap={executeSwap}
         onCancel={cancelSwap}
         canSwap={canSwap}
+      />
+
+      {/* Navigation drawer */}
+      <NavDrawer
+        isOpen={showNavDrawer}
+        onClose={() => setShowNavDrawer(false)}
       />
     </div>
   );
