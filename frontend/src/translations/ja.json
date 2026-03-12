@@ -9,7 +9,7 @@
     "home": "ホーム",
     "timer": "タイマー",
     "feedback": "フィードバック",
-    "combos": "コンボ",
+    "videos": "動画",
     "version": "v1.0.0"
   },
   "dashboard": {
@@ -93,8 +93,8 @@
     "thankYou": "フィードバックありがとうございます！",
     "failed": "送信に失敗しました。もう一度お試しください。"
   },
-  "combos": {
-    "title": "コンボ",
+  "videos": {
+    "title": "動画",
     "selectCategory": "トレーニングカテゴリーを選択",
     "warmup": "ウォームアップ",
     "warmupDesc": "試合前のストレッチと運動",
@@ -102,7 +102,10 @@
     "singlesDesc": "シングルス用のショットコンビネーション",
     "doubles": "ダブルス",
     "doublesDesc": "チーム戦略とローテーション",
-    "comingSoon": "さらなる機能を準備中..."
+    "comingSoon": "シングルス・ダブルス動画は準備中...",
+    "videosCount": "本の動画",
+    "openInYouTube": "YouTubeで開く",
+    "close": "閉じる"
   },
   "setup": {
     "createEvent": "新しいイベントを作成",

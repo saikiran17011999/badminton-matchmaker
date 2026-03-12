@@ -2902,6 +2902,328 @@ body::after {
   --green: #22c55e;
 }
 
+/* Combo card disabled state */
+.combo-card--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.combo-card--disabled:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--border);
+}
+
+/* Combo info wrapper */
+.combo-info {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Video count badge */
+.combo-video-count {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  margin-top: .5rem;
+  padding: .25rem .6rem;
+  background: var(--bg-2);
+  border-radius: 6px;
+  font-size: .75rem;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  color: var(--text-2);
+  letter-spacing: .03em;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   VIDEO MODALS
+   ═══════════════════════════════════════════════════════════════════ */
+.video-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(24, 16, 14, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 1000;
+  animation: fadeIn .25s ease forwards;
+}
+
+/* Video List Modal */
+.video-list-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 92%;
+  max-width: 420px;
+  max-height: 80vh;
+  background: linear-gradient(145deg, rgba(255,255,255,0.98) 0%, rgba(250,247,245,0.99) 100%);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(24, 16, 14, 0.35);
+  z-index: 1001;
+  animation: modalSlideIn .3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.video-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+
+.video-list-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin: 0;
+}
+
+.video-list-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all .2s;
+}
+.video-list-close:hover {
+  background: var(--primary-dim);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.video-list-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+}
+
+.video-list-item {
+  display: flex;
+  gap: 1rem;
+  padding: .75rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all .2s;
+  text-align: left;
+}
+.video-list-item:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 16px var(--shadow-warm);
+  transform: translateY(-2px);
+}
+
+.video-thumbnail {
+  position: relative;
+  width: 120px;
+  height: 68px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--bg-2);
+}
+.video-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-play-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+  color: white;
+  opacity: 0;
+  transition: opacity .2s;
+}
+.video-list-item:hover .video-play-overlay {
+  opacity: 1;
+}
+
+.video-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: .35rem;
+  min-width: 0;
+}
+
+.video-number {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: .85rem;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: .05em;
+}
+
+.video-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .95rem;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+/* Video Player Modal */
+.video-player-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 94%;
+  max-width: 720px;
+  background: linear-gradient(145deg, rgba(24,16,14,0.98) 0%, rgba(18,12,10,0.99) 100%);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+  animation: modalSlideIn .3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  overflow: hidden;
+}
+
+.video-player-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.video-player-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.video-player-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: rgba(255,255,255,0.7);
+  cursor: pointer;
+  transition: all .2s;
+  flex-shrink: 0;
+}
+.video-player-close:hover {
+  background: rgba(255,255,255,0.2);
+  color: white;
+}
+
+.video-player-container {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 aspect ratio */
+  background: black;
+}
+.video-player-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.video-player-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  gap: 1rem;
+}
+
+.video-youtube-link {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .6rem 1rem;
+  background: #ff0000;
+  color: white;
+  border-radius: 8px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: .9rem;
+  font-weight: 600;
+  text-decoration: none;
+  letter-spacing: .03em;
+  transition: all .2s;
+}
+.video-youtube-link:hover {
+  background: #cc0000;
+  transform: scale(1.03);
+}
+
+.video-close-btn {
+  padding: .6rem 1.25rem;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.8);
+  border-radius: 8px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  letter-spacing: .03em;
+}
+.video-close-btn:hover {
+  background: rgba(255,255,255,0.15);
+  color: white;
+}
+
+/* Mobile adjustments for video modal */
+@media (max-width: 480px) {
+  .video-thumbnail {
+    width: 100px;
+    height: 56px;
+  }
+  .video-player-footer {
+    flex-direction: column;
+    gap: .75rem;
+  }
+  .video-youtube-link,
+  .video-close-btn {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+}
+
 
 /* ═══════════════════════════════════════════════════════════════════
    SCORE MODAL (Blur Backdrop + Scroll Pickers)

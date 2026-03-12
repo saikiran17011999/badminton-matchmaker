@@ -9,7 +9,7 @@
     "home": "Home",
     "timer": "Timer",
     "feedback": "Feedback",
-    "combos": "Combos",
+    "videos": "Videos",
     "version": "v1.0.0"
   },
   "dashboard": {
@@ -93,8 +93,8 @@
     "thankYou": "Thank you for your feedback!",
     "failed": "Failed to submit. Please try again."
   },
-  "combos": {
-    "title": "Combos",
+  "videos": {
+    "title": "Videos",
     "selectCategory": "Select a training category",
     "warmup": "Warmup",
     "warmupDesc": "Pre-game stretching and exercises",
@@ -102,7 +102,10 @@
     "singlesDesc": "Shot combinations for singles play",
     "doubles": "Doubles",
     "doublesDesc": "Team strategies and rotations",
-    "comingSoon": "More features coming soon..."
+    "comingSoon": "Singles & Doubles videos coming soon...",
+    "videosCount": "videos",
+    "openInYouTube": "Open in YouTube",
+    "close": "Close"
   },
   "setup": {
     "createEvent": "Create New Event",
