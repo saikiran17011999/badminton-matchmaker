@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+// Use relative URL - works on both local dev and production
 
 const FeedbackPage = () => {
   const navigate = useNavigate();
@@ -83,7 +83,7 @@ const FeedbackPage = () => {
         formData.append('audio', audioBlob, 'feedback.webm');
       }
 
-      const response = await fetch(`${API_URL}/api/feedback`, {
+      const response = await fetch('/api/feedback', {
         method: 'POST',
         body: formData,
       });
