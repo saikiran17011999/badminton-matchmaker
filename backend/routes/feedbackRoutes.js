@@ -10,20 +10,28 @@ const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
 });
 
-// Email configuration
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
+// Create transporter lazily to ensure env vars are loaded
+const getTransporter = () => {
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
+    }
+  });
+};
 
 // POST /api/feedback - Submit feedback
 router.post('/', upload.single('audio'), async (req, res) => {
   try {
     const { type, email, message } = req.body;
     const audioFile = req.file;
+
+    console.log('Feedback received:', { type, email, hasAudio: !!audioFile });
+    console.log('Email config:', {
+      user: process.env.EMAIL_USER ? 'SET' : 'NOT SET',
+      pass: process.env.EMAIL_PASS ? 'SET' : 'NOT SET'
+    });
 
     // Build email content
     let emailContent = `
@@ -45,8 +53,8 @@ ${message}`;
 
     // Email options
     const mailOptions = {
-      from: 'badmintonmatchmaker@gmail.com',
-      to: 'badmintonmatchmaker@gmail.com',
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_USER,
       subject: `[Badminton Matchmaker] New ${type === 'voice' ? 'Voice' : 'Text'} Feedback`,
       text: emailContent,
       attachments: audioFile ? [{
@@ -58,21 +66,20 @@ ${message}`;
 
     // Try to send email
     if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+      const transporter = getTransporter();
       await transporter.sendMail(mailOptions);
-      console.log('Feedback email sent successfully');
+      console.log('Feedback email sent successfully to:', process.env.EMAIL_USER);
+      res.json({ success: true, message: 'Feedback sent successfully' });
     } else {
-      // If email not configured, just log it
-      console.log('Email not configured. Feedback received:');
+      // If email not configured, log and return success anyway
+      console.log('Email not configured. Feedback received but not emailed:');
       console.log(emailContent);
-      if (audioFile) {
-        console.log(`Audio file size: ${audioFile.size} bytes`);
-      }
+      res.json({ success: true, message: 'Feedback received (email not configured)' });
     }
-
-    res.json({ success: true, message: 'Feedback received successfully' });
   } catch (error) {
-    console.error('Failed to process feedback:', error);
-    res.status(500).json({ error: 'Failed to submit feedback' });
+    console.error('Failed to process feedback:', error.message);
+    console.error('Full error:', error);
+    res.status(500).json({ error: 'Failed to submit feedback: ' + error.message });
   }
 });
 
