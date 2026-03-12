@@ -45,8 +45,8 @@ ${message}`;
 
     // Email options
     const mailOptions = {
-      from: process.env.EMAIL_USER || 'noreply@badmintonmatchmaker.com',
-      to: 'saikirandonkana@gmail.com',
+      from: 'badmintonmatchmaker@gmail.com',
+      to: 'badmintonmatchmaker@gmail.com',
       subject: `[Badminton Matchmaker] New ${type === 'voice' ? 'Voice' : 'Text'} Feedback`,
       text: emailContent,
       attachments: audioFile ? [{

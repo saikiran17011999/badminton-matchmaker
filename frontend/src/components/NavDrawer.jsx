@@ -9,8 +9,8 @@ const NavDrawer = ({ isOpen, onClose }) => {
   const menuItems = [
     { id: 'home', labelKey: 'nav.home', icon: 'home', path: null },
     { id: 'timer', labelKey: 'nav.timer', icon: 'timer', path: 'timer' },
-    { id: 'feedback', labelKey: 'nav.feedback', icon: 'feedback', path: 'feedback' },
     { id: 'videos', labelKey: 'nav.videos', icon: 'videos', path: 'combos' },
+    { id: 'feedback', labelKey: 'nav.feedback', icon: 'feedback', path: 'feedback' },
   ];
 
   const handleNavigation = (item) => {
