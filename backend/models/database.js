@@ -92,6 +92,7 @@ const initDatabase = async () => {
       email TEXT,
       message TEXT,
       has_audio INTEGER DEFAULT 0,
+      audio_data TEXT,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP
     )
   `);

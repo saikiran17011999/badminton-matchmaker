@@ -24,10 +24,12 @@ router.post('/', upload.single('audio'), async (req, res) => {
     console.log('Timestamp:', new Date().toISOString());
     console.log('=============================');
 
-    // Save to database
+    // Save to database (including audio as base64)
+    const audioBase64 = audioFile ? audioFile.buffer.toString('base64') : null;
+
     const stmt = prepare(`
-      INSERT INTO feedback (type, email, message, has_audio, created_at)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO feedback (type, email, message, has_audio, audio_data, created_at)
+      VALUES (?, ?, ?, ?, ?, ?)
     `);
 
     stmt.run(
@@ -35,6 +37,7 @@ router.post('/', upload.single('audio'), async (req, res) => {
       email || 'Not provided',
       message || null,
       audioFile ? 1 : 0,
+      audioBase64,
       new Date().toISOString()
     );
 
@@ -50,12 +53,34 @@ router.post('/', upload.single('audio'), async (req, res) => {
 // GET /api/feedback - Get all feedback (for admin)
 router.get('/', async (req, res) => {
   try {
-    const stmt = prepare('SELECT * FROM feedback ORDER BY created_at DESC');
+    const stmt = prepare('SELECT id, type, email, message, has_audio, created_at FROM feedback ORDER BY created_at DESC');
     const feedback = stmt.all();
     res.json(feedback);
   } catch (error) {
     console.error('Failed to fetch feedback:', error.message);
     res.status(500).json({ error: 'Failed to fetch feedback' });
+  }
+});
+
+// GET /api/feedback/:id/audio - Stream audio for playback
+router.get('/:id/audio', async (req, res) => {
+  try {
+    const stmt = prepare('SELECT audio_data FROM feedback WHERE id = ? AND has_audio = 1');
+    const result = stmt.get(req.params.id);
+
+    if (!result || !result.audio_data) {
+      return res.status(404).json({ error: 'Audio not found' });
+    }
+
+    const audioBuffer = Buffer.from(result.audio_data, 'base64');
+    res.set({
+      'Content-Type': 'audio/webm',
+      'Content-Length': audioBuffer.length,
+    });
+    res.send(audioBuffer);
+  } catch (error) {
+    console.error('Failed to fetch audio:', error.message);
+    res.status(500).json({ error: 'Failed to fetch audio' });
   }
 });
 
