@@ -85,6 +85,17 @@ const initDatabase = async () => {
     )
   `);
 
+  db.run(`
+    CREATE TABLE IF NOT EXISTS feedback (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      type TEXT NOT NULL,
+      email TEXT,
+      message TEXT,
+      has_audio INTEGER DEFAULT 0,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
   saveDatabase();
   return db;
 };
