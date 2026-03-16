@@ -32,3 +32,6 @@ Data models and database operations.
 
 ### Round
 - id, eventId, roundNumber, restingPlayers, createdAt
+
+### Feedback
+- id, type, email, message, has_audio, created_at

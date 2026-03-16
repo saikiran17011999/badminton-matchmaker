@@ -17,6 +17,7 @@ Express route definitions that map URLs to controllers.
 | playerRoutes.js | /api/events/:id/players/* routes |
 | matchRoutes.js | /api/events/:id/matches/* routes |
 | roundRoutes.js | /api/events/:id/rounds/* routes |
+| feedbackRoutes.js | /api/feedback routes (POST to submit, GET to list) |
 
 ## Pattern
 

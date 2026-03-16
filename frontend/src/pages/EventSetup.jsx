@@ -10,6 +10,7 @@ const EventSetup = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  /* ── Logic unchanged ── */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -24,7 +25,7 @@ const EventSetup = () => {
       const event = await createEvent({
         type: eventType,
         numCourts: parseInt(numCourts),
-        playerNames: names
+        playerNames: names,
       });
 
       navigate(`/event/${event.id}`);
@@ -35,108 +36,157 @@ const EventSetup = () => {
     }
   };
 
+  const playerCount = playerNames.split('\n').filter(n => n.trim()).length;
+
+  /* ── Premium UI ── */
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-lg">
-        <div className="text-center mb-8">
-          <div className="text-6xl mb-4">🏸</div>
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            Badminton Matchmaker
+    <div className="setup-page min-h-screen flex items-center justify-center p-6">
+      {/* Faint diagonal court stripes */}
+      <div className="setup-court-bg" aria-hidden="true" />
+
+      <div className="w-full max-w-lg relative z-10">
+
+        {/* ── Header ── */}
+        <div className="text-center mb-10" style={{ animation: 'fadeInUp .5s ease both' }}>
+          <span
+            className="block text-7xl mb-5 shuttlecock-icon"
+            role="img"
+            aria-label="shuttlecock"
+          >
+            🏸
+          </span>
+          <h1 className="setup-title">
+            Badminton<br />
+            <span>Matchmaker</span>
           </h1>
-          <p className="text-gray-600">
+          <p className="setup-subtitle">
             Create fair matches automatically for your badminton event
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="card p-8">
-          <div className="mb-6">
-            <label className="block text-gray-700 font-medium mb-3">
-              Event Type
-            </label>
-            <div className="flex gap-4">
+        {/* ── Form card ── */}
+        <form onSubmit={handleSubmit} className="setup-card">
+
+          {/* Event Type */}
+          <div className="form-section">
+            <label className="form-label">Event Type</label>
+            <div className="flex gap-3">
               <button
                 type="button"
                 onClick={() => setEventType('singles')}
-                className={`flex-1 py-4 px-6 rounded-xl font-medium transition-all border-2 ${
-                  eventType === 'singles'
-                    ? 'border-green-500 bg-green-50 text-green-700'
-                    : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
-                }`}
+                className={`type-btn flex-1 ${eventType === 'singles' ? 'type-btn--active' : ''}`}
               >
-                <div className="text-2xl mb-1">🧍</div>
-                Singles
+                <span className="type-btn-icon">🧍</span>
+                <span className="type-btn-label">Singles</span>
               </button>
               <button
                 type="button"
                 onClick={() => setEventType('doubles')}
-                className={`flex-1 py-4 px-6 rounded-xl font-medium transition-all border-2 ${
-                  eventType === 'doubles'
-                    ? 'border-green-500 bg-green-50 text-green-700'
-                    : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
-                }`}
+                className={`type-btn flex-1 ${eventType === 'doubles' ? 'type-btn--active' : ''}`}
               >
-                <div className="text-2xl mb-1">👥</div>
-                Doubles
+                <span className="type-btn-icon">👥</span>
+                <span className="type-btn-label">Doubles</span>
               </button>
             </div>
           </div>
 
-          <div className="mb-6">
-            <label className="block text-gray-700 font-medium mb-2">
-              Number of Courts
-            </label>
-            <div className="flex items-center gap-4">
+          {/* Number of Courts */}
+          <div className="form-section">
+            <label className="form-label">Number of Courts</label>
+            <div className="courts-counter">
               <button
                 type="button"
                 onClick={() => setNumCourts(Math.max(1, numCourts - 1))}
-                className="w-12 h-12 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-xl font-bold"
+                className="counter-btn"
+                aria-label="Decrease courts"
               >
-                -
+                −
               </button>
-              <span className="text-3xl font-bold text-green-600 w-12 text-center">
-                {numCourts}
-              </span>
+              <div className="counter-value">
+                <span className="counter-number">{numCourts}</span>
+                <span className="counter-label">courts</span>
+              </div>
               <button
                 type="button"
                 onClick={() => setNumCourts(numCourts + 1)}
-                className="w-12 h-12 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-xl font-bold"
+                className="counter-btn"
+                aria-label="Increase courts"
               >
                 +
               </button>
             </div>
           </div>
 
-          <div className="mb-6">
-            <label className="block text-gray-700 font-medium mb-2">
-              Players (one per line)
+          {/* Players */}
+          <div className="form-section">
+            <label className="form-label">
+              Players
+              {playerCount > 0 && (
+                <span className="player-count-badge">{playerCount}</span>
+              )}
             </label>
             <textarea
               value={playerNames}
               onChange={(e) => setPlayerNames(e.target.value)}
-              placeholder="Alice&#10;Bob&#10;Charlie&#10;Diana&#10;..."
-              className="w-full h-40 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
+              placeholder={'Alice\nBob\nCharlie\nDiana\n...'}
+              className="players-textarea"
             />
-            <p className="text-sm text-gray-500 mt-1">
-              {playerNames.split('\n').filter(n => n.trim()).length} players entered
-            </p>
+            <p className="form-hint">One player name per line</p>
           </div>
 
+          {/* Error */}
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+            <div className="error-banner">
+              <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                  clipRule="evenodd"
+                />
+              </svg>
               {error}
             </div>
           )}
 
+          {/* Submit */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full btn-primary text-lg py-4"
+            className="btn-primary w-full text-xl py-4 mt-2"
           >
-            {loading ? 'Creating Event...' : 'START EVENT'}
+            {loading ? (
+              <>
+                <svg
+                  className="animate-spin w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  />
+                </svg>
+                Creating Event…
+              </>
+            ) : (
+              '🏸 START EVENT'
+            )}
           </button>
         </form>
 
-        <p className="text-center text-gray-500 text-sm mt-6">
+        <p
+          className="text-center mt-6"
+          style={{ color: 'var(--text-3)', fontSize: '.82rem' }}
+        >
           You can always add more players later
         </p>
       </div>
