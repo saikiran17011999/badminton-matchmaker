@@ -18,19 +18,20 @@ const upload = multer({
 
 const EXTRACTION_PROMPT = `Extract all handwritten names from this image. This is a sign-up sheet for a badminton event.
 
-Rules:
-- Return ONLY the names, one per line
-- No numbering, no bullets, no extra text
-- If a name is unclear, make your best guess
-- Ignore any non-name text (like titles, dates, headers)
-- Return names in the order they appear
+IMPORTANT:
+- Names may be in Japanese (kanji, hiragana, katakana) or English
+- Remove any numbering (1., 2., ①, etc.) - return ONLY the name
+- One name per line, no extra text
+- For unclear handwriting, make your best guess
+- Ignore headers, dates, titles - only extract player names
 
+Example input: "1. 田中太郎  2. Alice  3. 鈴木"
 Example output:
+田中太郎
 Alice
-Bob
-Charlie
+鈴木
 
-Now extract the names:`;
+Now extract all names from this image:`;
 
 // Provider: Anthropic Claude
 async function extractWithClaude(base64Image, mediaType) {
@@ -145,11 +146,29 @@ router.post('/extract-names', upload.single('image'), async (req, res) => {
 
     const extractedText = await provider.extract(base64Image, mediaType);
 
-    // Clean up: filter empty lines and trim whitespace
+    // Clean up extracted names
     const names = extractedText
       .split('\n')
-      .map(name => name.trim())
-      .filter(name => name.length > 0 && !name.includes(':'));
+      .map(name => {
+        let cleaned = name.trim();
+        // Remove common numbering patterns:
+        // 1. 2. 3. | 1) 2) 3) | 1: 2: 3: | ① ② ③ | (1) (2) (3) | 1、2、3、
+        cleaned = cleaned
+          .replace(/^[\d]+[.\):\-\s、]\s*/u, '')     // 1. 2) 3: 4- 5、
+          .replace(/^[\(（][\d]+[\)）]\s*/u, '')     // (1) （2）
+          .replace(/^[①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳]\s*/u, '')  // Circled numbers
+          .replace(/^[一二三四五六七八九十]+[.\s、]\s*/u, '')  // Japanese numbers
+          .replace(/^[-•·●○◯]\s*/u, '')              // Bullets
+          .trim();
+        return cleaned;
+      })
+      .filter(name => {
+        // Filter out empty lines, headers, and non-name text
+        if (name.length === 0) return false;
+        if (name.includes(':')) return false;
+        if (/^(name|names|player|players|参加者|名前|選手)$/i.test(name)) return false;
+        return true;
+      });
 
     res.json({ names, provider: provider.name });
 
