@@ -6,12 +6,14 @@ const playerRoutes = require('./playerRoutes');
 const matchRoutes = require('./matchRoutes');
 const roundRoutes = require('./roundRoutes');
 const feedbackRoutes = require('./feedbackRoutes');
+const ocrRoutes = require('./ocrRoutes');
 
 router.use('/events', eventRoutes);
 router.use('/events/:eventId/players', playerRoutes);
 router.use('/events/:eventId/matches', matchRoutes);
 router.use('/events/:eventId/rounds', roundRoutes);
 router.use('/feedback', feedbackRoutes);
+router.use('/ocr', ocrRoutes);
 
 router.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
