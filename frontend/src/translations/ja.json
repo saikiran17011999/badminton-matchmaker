@@ -59,7 +59,9 @@
   "swap": {
     "selectPlayer": "もう1人選択してください",
     "swapPlayers": "選手を交換",
-    "cancel": "キャンセル"
+    "cancel": "キャンセル",
+    "dropToSwap": "他の選手にドロップして交換",
+    "swapFailed": "交換に失敗しました"
   },
   "timer": {
     "title": "タイマー",

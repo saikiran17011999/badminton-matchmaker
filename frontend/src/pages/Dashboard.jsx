@@ -371,7 +371,7 @@ const Dashboard = () => {
             <>
               <span style={{ fontSize: '1.1rem' }}>🎯</span>
               <span className="swap-text">
-                Drop on another player to swap with <strong>{draggedPlayer?.name}</strong>
+                {t('swap.dropToSwap')} <strong>{draggedPlayer?.name}</strong>
               </span>
             </>
           )}

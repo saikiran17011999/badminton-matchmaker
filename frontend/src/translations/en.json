@@ -59,7 +59,9 @@
   "swap": {
     "selectPlayer": "Select 1 more player",
     "swapPlayers": "Swap Players",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "dropToSwap": "Drop on another player to swap with",
+    "swapFailed": "Swap failed"
   },
   "timer": {
     "title": "Timer",
