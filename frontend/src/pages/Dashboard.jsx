@@ -2,33 +2,27 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEvent } from '../context/EventContext';
 import { useLanguage } from '../context/LanguageContext';
-import { useSwap } from '../hooks/useSwap';
+import { useDragSwap } from '../hooks/useDragSwap';
 import { addPlayer, updatePlayer, removePlayer } from '../services/playerService';
 import { updateMatchScore } from '../services/matchService';
 import CourtCard from '../components/CourtCard';
 import RestingArea from '../components/RestingArea';
 import RoundNavigation from '../components/RoundNavigation';
 import PlayerPanel from '../components/PlayerPanel';
-import SwapIndicator from '../components/SwapIndicator';
 import NavDrawer from '../components/NavDrawer';
 
 const Dashboard = () => {
   const { eventId } = useParams();
   const navigate = useNavigate();
-  const { event, loading, error, fetchEvent, generateNextRound, goToRound } = useEvent();
+  const { event, loading, error, fetchEvent, generateNextRound, goToRound, isOrganiser, getAdminToken } = useEvent();
   const { language, toggleLanguage, t } = useLanguage();
   const [showPlayerPanel, setShowPlayerPanel] = useState(false);
   const [showNavDrawer, setShowNavDrawer] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
 
-  /* ── Logic unchanged ── */
-  const {
-    selectedPlayers,
-    selectPlayer,
-    executeSwap,
-    cancelSwap,
-    isSelected,
-    canSwap,
-  } = useSwap(eventId, event?.currentRound, () => fetchEvent(eventId));
+  /* ── Drag-and-drop swap ── */
+  const dragSwap = useDragSwap(eventId, event?.currentRound, () => fetchEvent(eventId, getAdminToken()), getAdminToken);
+  const { swapError, draggedPlayer } = dragSwap;
 
   useEffect(() => {
     fetchEvent(eventId).catch(() => navigate('/'));
@@ -36,8 +30,9 @@ const Dashboard = () => {
 
   const handleAddPlayer = async (name) => {
     try {
-      await addPlayer(eventId, name);
-      await fetchEvent(eventId);
+      const token = getAdminToken();
+      await addPlayer(eventId, name, token);
+      await fetchEvent(eventId, token);
     } catch (err) {
       console.error('Failed to add player:', err);
     }
@@ -45,8 +40,9 @@ const Dashboard = () => {
 
   const handleUpdatePlayer = async (playerId, name) => {
     try {
-      await updatePlayer(eventId, playerId, name);
-      await fetchEvent(eventId);
+      const token = getAdminToken();
+      await updatePlayer(eventId, playerId, name, token);
+      await fetchEvent(eventId, token);
     } catch (err) {
       console.error('Failed to update player:', err);
     }
@@ -54,8 +50,9 @@ const Dashboard = () => {
 
   const handleRemovePlayer = async (playerId) => {
     try {
-      await removePlayer(eventId, playerId);
-      await fetchEvent(eventId);
+      const token = getAdminToken();
+      await removePlayer(eventId, playerId, token);
+      await fetchEvent(eventId, token);
     } catch (err) {
       console.error('Failed to remove player:', err);
     }
@@ -63,11 +60,20 @@ const Dashboard = () => {
 
   const handleScoreSubmit = async (matchId, team1Score, team2Score) => {
     try {
-      await updateMatchScore(eventId, matchId, team1Score, team2Score);
-      await fetchEvent(eventId);
+      const token = getAdminToken();
+      await updateMatchScore(eventId, matchId, team1Score, team2Score, token);
+      await fetchEvent(eventId, token);
     } catch (err) {
       console.error('Failed to update score:', err);
     }
+  };
+
+  // Copy share link to clipboard
+  const handleShare = () => {
+    const shareUrl = `${window.location.origin}/event/${eventId}`;
+    navigator.clipboard.writeText(shareUrl);
+    setShowShareModal(true);
+    setTimeout(() => setShowShareModal(false), 2000);
   };
 
   const handlePreviousRound = () => {
@@ -156,6 +162,24 @@ const Dashboard = () => {
 
           {/* Right side buttons */}
           <div className="flex items-center gap-2">
+            {/* Role indicator */}
+            <span className={`role-badge ${isOrganiser() ? 'role-badge--organiser' : 'role-badge--viewer'}`}>
+              {isOrganiser() ? `🔑 ${t('role.organiser')}` : `👁 ${t('role.viewer')}`}
+            </span>
+
+            {/* Share button - always visible */}
+            <button
+              onClick={handleShare}
+              className="manage-btn"
+              aria-label={t('share.button')}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+              </svg>
+              {t('share.button')}
+            </button>
+
             {/* Language toggle */}
             <button
               onClick={toggleLanguage}
@@ -169,17 +193,19 @@ const Dashboard = () => {
               {language === 'en' ? '日本語' : 'EN'}
             </button>
 
-            {/* Manage players toggle */}
-            <button
-              onClick={() => setShowPlayerPanel(!showPlayerPanel)}
-              className={`manage-btn ${showPlayerPanel ? 'manage-btn--active' : ''}`}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-              </svg>
-              {showPlayerPanel ? t('dashboard.hide') : t('dashboard.players')}
-            </button>
+            {/* Manage players toggle - only for organiser */}
+            {isOrganiser() && (
+              <button
+                onClick={() => setShowPlayerPanel(!showPlayerPanel)}
+                className={`manage-btn ${showPlayerPanel ? 'manage-btn--active' : ''}`}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                </svg>
+                {showPlayerPanel ? t('dashboard.hide') : t('dashboard.players')}
+              </button>
+            )}
           </div>
         </div>
       </header>
@@ -209,29 +235,35 @@ const Dashboard = () => {
                     </span>
                   )}
                 </p>
-                <button
-                  onClick={generateNextRound}
-                  disabled={
-                    loading ||
-                    (event.type === 'doubles' && event.players.length < 4) ||
-                    (event.type === 'singles' && event.players.length < 2)
-                  }
-                  className="btn-primary text-xl px-10 py-4"
-                >
-                  {loading ? (
-                    <>
-                      <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10"
-                          stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                      </svg>
-                      {t('start.generating')}
-                    </>
-                  ) : (
-                    <>⚡ {t('start.generateFirstRound')}</>
-                  )}
-                </button>
+                {isOrganiser() ? (
+                  <button
+                    onClick={generateNextRound}
+                    disabled={
+                      loading ||
+                      (event.type === 'doubles' && event.players.length < 4) ||
+                      (event.type === 'singles' && event.players.length < 2)
+                    }
+                    className="btn-primary text-xl px-10 py-4"
+                  >
+                    {loading ? (
+                      <>
+                        <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10"
+                            stroke="currentColor" strokeWidth="4" />
+                          <path className="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                        </svg>
+                        {t('start.generating')}
+                      </>
+                    ) : (
+                      <>⚡ {t('start.generateFirstRound')}</>
+                    )}
+                  </button>
+                ) : (
+                  <p className="viewer-waiting-msg">
+                    ⏳ {t('role.waitingForOrganiser')}
+                  </p>
+                )}
               </div>
             ) : (
               <>
@@ -242,7 +274,7 @@ const Dashboard = () => {
                     totalRounds={event.totalRounds}
                     onPrevious={handlePreviousRound}
                     onNext={handleNextRound}
-                    onGenerate={generateNextRound}
+                    onGenerate={isOrganiser() ? generateNextRound : null}
                     loading={loading}
                   />
                 </div>
@@ -258,9 +290,10 @@ const Dashboard = () => {
                         <CourtCard
                           match={match}
                           courtNumber={match.courtNumber}
-                          onPlayerClick={selectPlayer}
-                          isPlayerSelected={isSelected}
-                          onScoreSubmit={handleScoreSubmit}
+                          isPlayerSelected={() => false}
+                          onScoreSubmit={isOrganiser() ? handleScoreSubmit : undefined}
+                          readOnly={!isOrganiser()}
+                          dragHandlers={isOrganiser() ? dragSwap : null}
                         />
                       </div>
                     ))}
@@ -277,8 +310,8 @@ const Dashboard = () => {
                 {/* Resting area */}
                 <RestingArea
                   players={restingPlayers}
-                  onPlayerClick={selectPlayer}
-                  isPlayerSelected={isSelected}
+                  isPlayerSelected={() => false}
+                  dragHandlers={isOrganiser() ? dragSwap : null}
                 />
               </>
             )}
@@ -324,19 +357,43 @@ const Dashboard = () => {
         </>
       )}
 
-      {/* Swap indicator */}
-      <SwapIndicator
-        selectedCount={selectedPlayers.length}
-        onSwap={executeSwap}
-        onCancel={cancelSwap}
-        canSwap={canSwap}
-      />
+      {/* Drag status indicator - only for organiser */}
+      {isOrganiser() && (draggedPlayer || swapError) && (
+        <div className={`swap-bar ${swapError ? 'swap-bar--error' : ''}`}>
+          {swapError ? (
+            <>
+              <span style={{ fontSize: '1.1rem' }}>⚠️</span>
+              <span className="swap-text" style={{ color: 'var(--red)' }}>
+                {swapError}
+              </span>
+            </>
+          ) : (
+            <>
+              <span style={{ fontSize: '1.1rem' }}>🎯</span>
+              <span className="swap-text">
+                Drop on another player to swap with <strong>{draggedPlayer?.name}</strong>
+              </span>
+            </>
+          )}
+        </div>
+      )}
 
       {/* Navigation drawer */}
       <NavDrawer
         isOpen={showNavDrawer}
         onClose={() => setShowNavDrawer(false)}
       />
+
+      {/* Share modal toast */}
+      {showShareModal && (
+        <div className="share-toast">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M5 13l4 4L19 7" />
+          </svg>
+          {t('share.copied')}
+        </div>
+      )}
     </div>
   );
 };

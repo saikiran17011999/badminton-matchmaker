@@ -1,5 +1,6 @@
 const Match = require('../models/Match');
 const Player = require('../models/Player');
+const Round = require('../models/Round');
 const ratingSystem = require('../../matchmaking/ratingSystem');
 
 const updateMatchScore = (matchId, { team1Score, team2Score }) => {
@@ -31,14 +32,26 @@ const updateMatchScore = (matchId, { team1Score, team2Score }) => {
 
 const swapPlayers = (eventId, roundNumber, player1Id, player2Id) => {
   const matches = Match.findByEventAndRound(eventId, roundNumber);
+  const round = Round.findByEventAndNumber(eventId, roundNumber);
 
+  if (!round) {
+    return { error: 'Round not found' };
+  }
+
+  // Find player locations (match or bench)
   let player1Match = null;
   let player1Team = null;
   let player1Index = -1;
+  let player1OnBench = false;
+  let player1BenchIndex = -1;
+
   let player2Match = null;
   let player2Team = null;
   let player2Index = -1;
+  let player2OnBench = false;
+  let player2BenchIndex = -1;
 
+  // Check matches for both players
   for (const match of matches) {
     const t1Idx = match.team1Players.findIndex(p => p.id === player1Id);
     if (t1Idx !== -1) {
@@ -67,10 +80,61 @@ const swapPlayers = (eventId, roundNumber, player1Id, player2Id) => {
     }
   }
 
-  if (!player1Match || !player2Match) {
-    return { error: 'One or both players not found in current round matches' };
+  // Check bench for both players
+  const restingPlayers = round.restingPlayers || [];
+  player1BenchIndex = restingPlayers.findIndex(p => p.id === player1Id);
+  player2BenchIndex = restingPlayers.findIndex(p => p.id === player2Id);
+  player1OnBench = player1BenchIndex !== -1;
+  player2OnBench = player2BenchIndex !== -1;
+
+  // Validate players were found
+  if (!player1Match && !player1OnBench) {
+    return { error: 'Player 1 not found in current round' };
+  }
+  if (!player2Match && !player2OnBench) {
+    return { error: 'Player 2 not found in current round' };
   }
 
+  // Both on bench - pointless swap
+  if (player1OnBench && player2OnBench) {
+    return { error: 'Cannot swap two bench players' };
+  }
+
+  // Court ↔ Bench swap
+  if (player1OnBench || player2OnBench) {
+    const benchPlayerId = player1OnBench ? player1Id : player2Id;
+    const benchPlayerIndex = player1OnBench ? player1BenchIndex : player2BenchIndex;
+    const courtMatch = player1OnBench ? player2Match : player1Match;
+    const courtTeam = player1OnBench ? player2Team : player1Team;
+    const courtIndex = player1OnBench ? player2Index : player1Index;
+
+    // Get player data
+    const benchPlayerData = restingPlayers[benchPlayerIndex];
+    const courtPlayerData = courtTeam === 'team1'
+      ? courtMatch.team1Players[courtIndex]
+      : courtMatch.team2Players[courtIndex];
+
+    // Update match: replace court player with bench player
+    const team1Players = [...courtMatch.team1Players];
+    const team2Players = [...courtMatch.team2Players];
+
+    if (courtTeam === 'team1') {
+      team1Players[courtIndex] = benchPlayerData;
+    } else {
+      team2Players[courtIndex] = benchPlayerData;
+    }
+
+    Match.updatePlayers(courtMatch.id, { team1Players, team2Players });
+
+    // Update bench: replace bench player with court player
+    const newRestingPlayers = [...restingPlayers];
+    newRestingPlayers[benchPlayerIndex] = { id: courtPlayerData.id, name: courtPlayerData.name };
+    Round.updateRestingPlayers(eventId, roundNumber, newRestingPlayers);
+
+    return { success: true };
+  }
+
+  // Court ↔ Court swap (existing logic)
   const player1Data = player1Team === 'team1'
     ? player1Match.team1Players[player1Index]
     : player1Match.team2Players[player1Index];
@@ -79,6 +143,7 @@ const swapPlayers = (eventId, roundNumber, player1Id, player2Id) => {
     : player2Match.team2Players[player2Index];
 
   if (player1Match.id === player2Match.id) {
+    // Same match swap
     const team1Players = [...player1Match.team1Players];
     const team2Players = [...player1Match.team2Players];
 
@@ -90,6 +155,7 @@ const swapPlayers = (eventId, roundNumber, player1Id, player2Id) => {
 
     Match.updatePlayers(player1Match.id, { team1Players, team2Players });
   } else {
+    // Different match swap
     const match1Team1 = [...player1Match.team1Players];
     const match1Team2 = [...player1Match.team2Players];
     const match2Team1 = [...player2Match.team1Players];

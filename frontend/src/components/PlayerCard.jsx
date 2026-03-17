@@ -9,7 +9,26 @@ const getAvatarClass = (name = '') => {
   return AVATAR_CLASSES[Math.abs(hash) % AVATAR_CLASSES.length];
 };
 
-const PlayerCard = ({ player, onClick, isSelected, showRating = true, size = 'normal' }) => {
+const PlayerCard = ({
+  player,
+  onClick,
+  isSelected,
+  showRating = true,
+  size = 'normal',
+  // Drag-and-drop props
+  draggable = false,
+  onDragStart,
+  onDragEnd,
+  onDragOver,
+  onDragLeave,
+  onDrop,
+  onTouchStart,
+  onTouchMove,
+  onTouchEnd,
+  isDragging = false,
+  isDropTarget = false,
+  isSwapping = false,
+}) => {
   const avClass = getAvatarClass(player.name);
   const initial = player.name.charAt(0).toUpperCase();
 
@@ -17,9 +36,14 @@ const PlayerCard = ({ player, onClick, isSelected, showRating = true, size = 'no
   const isSmall  = size === 'small';
   const isLarge  = size === 'large';
 
-  const chipClass = isSmall
+  let chipClass = isSmall
     ? `player-chip ${isSelected ? 'selected' : ''}`
     : `player-chip-normal player-chip ${isSelected ? 'selected' : ''}`;
+
+  // Add drag states
+  if (isDragging) chipClass += ' dragging';
+  if (isDropTarget) chipClass += ' drop-target';
+  if (isSwapping) chipClass += ' swapping';
 
   const avatarSizeClass = isSmall ? 'player-avatar player-avatar-sm' : isLarge ? 'player-avatar player-avatar-lg' : 'player-avatar';
 
@@ -30,6 +54,17 @@ const PlayerCard = ({ player, onClick, isSelected, showRating = true, size = 'no
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
       onKeyDown={(e) => e.key === 'Enter' && onClick?.(player.id)}
+      // Drag-and-drop attributes
+      draggable={draggable}
+      onDragStart={onDragStart ? (e) => onDragStart(e, player) : undefined}
+      onDragEnd={onDragEnd}
+      onDragOver={onDragOver ? (e) => onDragOver(e, player) : undefined}
+      onDragLeave={onDragLeave}
+      onDrop={onDrop ? (e) => onDrop(e, player) : undefined}
+      // Touch events for mobile
+      onTouchStart={onTouchStart ? (e) => onTouchStart(e, player) : undefined}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd ? (e) => onTouchEnd(e, player) : undefined}
     >
       <div className={`${avatarSizeClass} ${avClass}`}>
         {initial}
@@ -55,6 +90,20 @@ const PlayerCard = ({ player, onClick, isSelected, showRating = true, size = 'no
             pointerEvents: 'none',
           }}
         />
+      )}
+
+      {/* Drag indicator */}
+      {draggable && !isDragging && (
+        <span className="drag-handle" title="Drag to swap">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="9" cy="5" r="2"/>
+            <circle cx="15" cy="5" r="2"/>
+            <circle cx="9" cy="12" r="2"/>
+            <circle cx="15" cy="12" r="2"/>
+            <circle cx="9" cy="19" r="2"/>
+            <circle cx="15" cy="19" r="2"/>
+          </svg>
+        </span>
       )}
     </div>
   );

@@ -951,6 +951,36 @@ body::after {
   animation: fadeIn .3s ease;
 }
 
+.success-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: .6rem;
+  padding: .88rem 1.1rem;
+  background: rgba(34,197,94,.08);
+  border: 1px solid rgba(34,197,94,.24);
+  border-left: 3px solid #22c55e;
+  border-radius: 13px;
+  color: #16a34a;
+  font-size: .85rem;
+  margin-bottom: .5rem;
+  animation: fadeIn .3s ease;
+}
+
+.warning-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: .6rem;
+  padding: .88rem 1.1rem;
+  background: rgba(245,158,11,.08);
+  border: 1px solid rgba(245,158,11,.24);
+  border-left: 3px solid #f59e0b;
+  border-radius: 13px;
+  color: #d97706;
+  font-size: .85rem;
+  margin-bottom: 1rem;
+  animation: fadeIn .3s ease;
+}
+
 
 /* ═══════════════════════════════════════════════════════════════════
    DASHBOARD HEADER
@@ -1522,6 +1552,96 @@ body::after {
   box-shadow: 0 0 16px rgba(220,38,38,.14);
 }
 
+/* Drag-and-drop states */
+.player-chip.dragging,
+.player-chip-normal.dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+  border-style: dashed !important;
+}
+
+.player-chip.drop-target,
+.player-chip-normal.drop-target {
+  background: rgba(34, 197, 94, 0.15) !important;
+  border-color: #22c55e !important;
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3), inset 0 0 10px rgba(34, 197, 94, 0.1);
+  transform: scale(1.08);
+}
+
+.player-chip.swapping,
+.player-chip-normal.swapping {
+  animation: swap-flash 0.5s ease-out;
+}
+
+@keyframes swap-flash {
+  0% {
+    transform: scale(1);
+    background: rgba(34, 197, 94, 0.3);
+    box-shadow: 0 0 30px rgba(34, 197, 94, 0.5);
+  }
+  50% {
+    transform: scale(1.15);
+    background: rgba(34, 197, 94, 0.5);
+    box-shadow: 0 0 40px rgba(34, 197, 94, 0.7);
+  }
+  100% {
+    transform: scale(1);
+    background: inherit;
+    box-shadow: none;
+  }
+}
+
+/* Draggable cursor */
+.player-chip[draggable="true"],
+.player-chip-normal[draggable="true"] {
+  cursor: grab;
+}
+
+.player-chip[draggable="true"]:active,
+.player-chip-normal[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+/* Drag handle indicator */
+.drag-handle {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-3);
+  opacity: 0;
+  transition: opacity 0.2s;
+  cursor: grab;
+}
+
+.player-chip:hover .drag-handle,
+.player-chip-normal:hover .drag-handle {
+  opacity: 0.5;
+}
+
+.player-chip:hover .drag-handle:hover,
+.player-chip-normal:hover .drag-handle:hover {
+  opacity: 1;
+  color: var(--primary);
+}
+
+/* Drag ghost element */
+.drag-ghost {
+  position: fixed;
+  top: -100px;
+  left: -100px;
+  padding: 8px 16px;
+  background: var(--primary);
+  color: white;
+  border-radius: 20px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  box-shadow: 0 4px 20px rgba(220, 38, 38, 0.4);
+  pointer-events: none;
+  z-index: 9999;
+}
+
 
 /* ═══════════════════════════════════════════════════════════════════
    AVATARS
@@ -1907,6 +2027,15 @@ body::after {
   color: var(--text);
 }
 .swap-icons { display: flex; align-items: center; gap: .35rem; font-size: .85rem; }
+.swap-bar--error {
+  border-color: var(--red);
+  animation: slide-up-in .36s cubic-bezier(.34,1.56,.64,1) both, shake .5s ease-in-out;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(-50%); }
+  20%, 60% { transform: translateX(calc(-50% - 6px)); }
+  40%, 80% { transform: translateX(calc(-50% + 6px)); }
+}
 
 
 /* ═══════════════════════════════════════════════════════════════════

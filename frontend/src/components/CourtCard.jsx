@@ -3,7 +3,16 @@ import PlayerCard from './PlayerCard';
 import ScrollPicker from './ScrollPicker';
 import { useLanguage } from '../context/LanguageContext';
 
-const CourtCard = ({ match, courtNumber, onPlayerClick, isPlayerSelected, onScoreSubmit }) => {
+const CourtCard = ({
+  match,
+  courtNumber,
+  onPlayerClick,
+  isPlayerSelected,
+  onScoreSubmit,
+  readOnly = false,
+  // Drag-and-drop props
+  dragHandlers = null,
+}) => {
   const { t } = useLanguage();
   const [team1Score, setTeam1Score] = useState(0);
   const [team2Score, setTeam2Score] = useState(0);
@@ -13,13 +22,16 @@ const CourtCard = ({ match, courtNumber, onPlayerClick, isPlayerSelected, onScor
   const scoreValues = Array.from({ length: 31 }, (_, i) => i);
 
   const handleOpenScoreModal = () => {
+    if (readOnly) return; // Don't open for viewers
     setTeam1Score(0);
     setTeam2Score(0);
     setShowScoreModal(true);
   };
 
   const handleSubmitScore = () => {
-    onScoreSubmit(match.id, team1Score, team2Score);
+    if (onScoreSubmit) {
+      onScoreSubmit(match.id, team1Score, team2Score);
+    }
     setShowScoreModal(false);
   };
 
@@ -62,6 +74,19 @@ const CourtCard = ({ match, courtNumber, onPlayerClick, isPlayerSelected, onScor
                   isSelected={isPlayerSelected(player.id)}
                   showRating={false}
                   size="medium"
+                  // Drag-and-drop
+                  draggable={!!dragHandlers}
+                  onDragStart={dragHandlers?.handleDragStart}
+                  onDragEnd={dragHandlers?.handleDragEnd}
+                  onDragOver={dragHandlers?.handleDragOver}
+                  onDragLeave={dragHandlers?.handleDragLeave}
+                  onDrop={dragHandlers?.handleDrop}
+                  onTouchStart={dragHandlers?.handleTouchStart}
+                  onTouchMove={dragHandlers?.handleTouchMove}
+                  onTouchEnd={dragHandlers?.handleTouchEnd}
+                  isDragging={dragHandlers?.isDragging(player.id)}
+                  isDropTarget={dragHandlers?.isDropTarget(player.id)}
+                  isSwapping={dragHandlers?.isSwapping(player.id)}
                 />
               ))}
             </div>
@@ -84,6 +109,19 @@ const CourtCard = ({ match, courtNumber, onPlayerClick, isPlayerSelected, onScor
                   isSelected={isPlayerSelected(player.id)}
                   showRating={false}
                   size="medium"
+                  // Drag-and-drop
+                  draggable={!!dragHandlers}
+                  onDragStart={dragHandlers?.handleDragStart}
+                  onDragEnd={dragHandlers?.handleDragEnd}
+                  onDragOver={dragHandlers?.handleDragOver}
+                  onDragLeave={dragHandlers?.handleDragLeave}
+                  onDrop={dragHandlers?.handleDrop}
+                  onTouchStart={dragHandlers?.handleTouchStart}
+                  onTouchMove={dragHandlers?.handleTouchMove}
+                  onTouchEnd={dragHandlers?.handleTouchEnd}
+                  isDragging={dragHandlers?.isDragging(player.id)}
+                  isDropTarget={dragHandlers?.isDropTarget(player.id)}
+                  isSwapping={dragHandlers?.isSwapping(player.id)}
                 />
               ))}
             </div>

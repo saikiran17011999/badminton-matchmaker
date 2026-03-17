@@ -33,6 +33,14 @@ class Round {
     return result?.max ?? 0;
   }
 
+  static updateRestingPlayers(eventId, roundNumber, restingPlayers) {
+    const stmt = prepare(`
+      UPDATE rounds SET resting_players = ? WHERE event_id = ? AND round_number = ?
+    `);
+    stmt.run(JSON.stringify(restingPlayers), eventId, roundNumber);
+    return this.findByEventAndNumber(eventId, roundNumber);
+  }
+
   static format(round) {
     return {
       id: round.id,

@@ -1,6 +1,9 @@
 import PlayerCard from './PlayerCard';
+import { useLanguage } from '../context/LanguageContext';
 
-const RestingArea = ({ players, onPlayerClick, isPlayerSelected }) => {
+const RestingArea = ({ players, onPlayerClick, isPlayerSelected, dragHandlers = null }) => {
+  const { t } = useLanguage();
+
   if (!players || players.length === 0) return null;
 
   return (
@@ -10,7 +13,7 @@ const RestingArea = ({ players, onPlayerClick, isPlayerSelected }) => {
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M3 17h18M5 17V9a2 2 0 012-2h10a2 2 0 012 2v8M8 17v2m8-2v2" />
         </svg>
-        On the Bench
+        {t('resting.title')}
         <span
           style={{
             marginLeft: 'auto',
@@ -36,12 +39,25 @@ const RestingArea = ({ players, onPlayerClick, isPlayerSelected }) => {
             isSelected={isPlayerSelected?.(player.id)}
             showRating={false}
             size="small"
+            // Drag-and-drop
+            draggable={!!dragHandlers}
+            onDragStart={dragHandlers?.handleDragStart}
+            onDragEnd={dragHandlers?.handleDragEnd}
+            onDragOver={dragHandlers?.handleDragOver}
+            onDragLeave={dragHandlers?.handleDragLeave}
+            onDrop={dragHandlers?.handleDrop}
+            onTouchStart={dragHandlers?.handleTouchStart}
+            onTouchMove={dragHandlers?.handleTouchMove}
+            onTouchEnd={dragHandlers?.handleTouchEnd}
+            isDragging={dragHandlers?.isDragging(player.id)}
+            isDropTarget={dragHandlers?.isDropTarget(player.id)}
+            isSwapping={dragHandlers?.isSwapping(player.id)}
           />
         ))}
       </div>
 
       <p className="resting-hint">
-        ⬆ These players have priority in the next round
+        ⬆ {t('resting.priority')}
       </p>
     </div>
   );
