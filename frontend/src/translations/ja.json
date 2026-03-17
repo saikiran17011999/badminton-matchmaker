@@ -123,7 +123,17 @@
     "creatingEvent": "作成中..."
   },
   "resting": {
-    "title": "休憩中",
-    "noResting": "休憩中の選手はいません"
+    "title": "休憩",
+    "noResting": "休憩中の選手はいません",
+    "priority": "次のラウンドで優先されます"
+  },
+  "role": {
+    "organiser": "主催者",
+    "viewer": "観覧者",
+    "waitingForOrganiser": "主催者がイベントを開始するのを待っています..."
+  },
+  "share": {
+    "button": "共有",
+    "copied": "リンクをコピーしました！選手と共有できます（閲覧のみ）"
   }
 }

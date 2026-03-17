@@ -42,9 +42,19 @@ const initDatabase = async () => {
       type TEXT NOT NULL CHECK(type IN ('singles', 'doubles')),
       num_courts INTEGER NOT NULL,
       current_round INTEGER DEFAULT 0,
+      admin_token TEXT,
+      share_code TEXT,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
+  // Migration: Add new columns to existing tables
+  try {
+    db.run(`ALTER TABLE events ADD COLUMN admin_token TEXT`);
+  } catch (e) { /* Column already exists */ }
+  try {
+    db.run(`ALTER TABLE events ADD COLUMN share_code TEXT`);
+  } catch (e) { /* Column already exists */ }
 
   db.run(`
     CREATE TABLE IF NOT EXISTS players (

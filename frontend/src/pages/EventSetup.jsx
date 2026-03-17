@@ -26,19 +26,16 @@ const EventSetup = () => {
 
     try {
       const names = await extractNamesFromImage(file);
-      if (names.length > 0) {
-        // Append to existing names (or set if empty)
-        setPlayerNames(prev => {
-          const existing = prev.trim();
-          const newNames = names.join('\n');
-          return existing ? `${existing}\n${newNames}` : newNames;
-        });
-      }
+      // Set names (includes empty lines for unclear names that organizer can edit)
+      setPlayerNames(prev => {
+        const existing = prev.trim();
+        const newNames = names.join('\n');
+        return existing ? `${existing}\n${newNames}` : newNames;
+      });
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to extract names from image');
     } finally {
       setExtracting(false);
-      // Reset file input so same file can be selected again
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }

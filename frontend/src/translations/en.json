@@ -123,7 +123,17 @@
     "creatingEvent": "Creating..."
   },
   "resting": {
-    "title": "Resting",
-    "noResting": "No resting players"
+    "title": "Bench",
+    "noResting": "No resting players",
+    "priority": "These players have priority in the next round"
+  },
+  "role": {
+    "organiser": "Organiser",
+    "viewer": "Viewer",
+    "waitingForOrganiser": "Waiting for organiser to start the event..."
+  },
+  "share": {
+    "button": "Share",
+    "copied": "Link copied! Share with players (read-only access)"
   }
 }

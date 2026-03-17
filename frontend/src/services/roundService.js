@@ -1,7 +1,8 @@
 import api from './api';
 
-export const generateRound = async (eventId) => {
-  const response = await api.post(`/events/${eventId}/rounds/generate`);
+export const generateRound = async (eventId, token = null) => {
+  const params = token ? { token } : {};
+  const response = await api.post(`/events/${eventId}/rounds/generate`, {}, { params });
   return response.data;
 };
 

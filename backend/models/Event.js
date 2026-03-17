@@ -1,22 +1,40 @@
 const { prepare } = require('./database');
-const { generateEventId } = require('../utils/idGenerator');
+const { generateEventId, generateAdminToken, generateShareCode } = require('../utils/idGenerator');
 
 class Event {
   static create({ type, numCourts }) {
     const id = generateEventId();
+    const adminToken = generateAdminToken();
+    const shareCode = generateShareCode();
+
     const stmt = prepare(`
-      INSERT INTO events (id, type, num_courts)
-      VALUES (?, ?, ?)
+      INSERT INTO events (id, type, num_courts, admin_token, share_code)
+      VALUES (?, ?, ?, ?, ?)
     `);
-    stmt.run(id, type, numCourts);
-    return this.findById(id);
+    stmt.run(id, type, numCourts, adminToken, shareCode);
+    return this.findById(id, true); // Return with admin token
   }
 
-  static findById(id) {
+  // Verify if token matches event's admin token
+  static verifyAdminToken(eventId, token) {
+    const stmt = prepare('SELECT admin_token FROM events WHERE id = ?');
+    const event = stmt.get(eventId);
+    return event && event.admin_token === token;
+  }
+
+  // Find event by share code (for joining via link)
+  static findByShareCode(shareCode) {
+    const stmt = prepare('SELECT * FROM events WHERE share_code = ?');
+    const event = stmt.get(shareCode);
+    if (!event) return null;
+    return this.format(event, false); // Never include admin token
+  }
+
+  static findById(id, includeAdminToken = false) {
     const stmt = prepare('SELECT * FROM events WHERE id = ?');
     const event = stmt.get(id);
     if (!event) return null;
-    return this.format(event);
+    return this.format(event, includeAdminToken);
   }
 
   static updateCurrentRound(id, roundNumber) {
@@ -30,14 +48,22 @@ class Event {
     return stmt.run(id);
   }
 
-  static format(event) {
-    return {
+  static format(event, includeAdminToken = false) {
+    const formatted = {
       id: event.id,
       type: event.type,
       numCourts: event.num_courts,
       currentRound: event.current_round,
+      shareCode: event.share_code,
       createdAt: event.created_at
     };
+
+    // Only include admin token when explicitly requested (for organiser)
+    if (includeAdminToken) {
+      formatted.adminToken = event.admin_token;
+    }
+
+    return formatted;
   }
 }
 

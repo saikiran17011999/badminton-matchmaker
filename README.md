@@ -4,12 +4,28 @@ A production-quality web application that helps badminton event organizers autom
 
 ## Features
 
+### Core Matchmaking
 - **Event Setup**: Create singles or doubles events with configurable courts
 - **Smart Matchmaking**: Algorithm ensures balanced teams and fair playtime
 - **Live Dashboard**: Visual court cards showing active matches
 - **Player Management**: Add, edit, remove players mid-event
-- **Rating System**: Dynamic ratings that improve match balance over time
+- **Rating System**: Dynamic ELO ratings that improve match balance over time
 - **Round Navigation**: Browse through match history
+
+### Role-Based Access Control
+- **Organiser Role**: Full control - create events, manage players, generate rounds, enter scores
+- **Viewer Role**: Read-only access - view matches and scores via shared link
+- **Shareable Links**: Organiser can share event link for spectators
+- **Token-Based Auth**: Secure admin token stored locally for organiser access
+
+### UI Features
+- **Glassmorphism Design**: Modern frosted glass UI with horizontal court layout
+- **Navigation Drawer**: Hamburger menu for easy navigation
+- **Score Modal**: Scroll picker with blur backdrop for entering scores
+- **Language Toggle**: English/Japanese translations support (全ページ対応)
+- **Match Timer**: Countdown timer for matches with audio alerts
+- **Training Combos**: Practice combo sequences with video tutorials
+- **Feedback System**: Voice and text feedback with database storage
 
 ## Tech Stack
 

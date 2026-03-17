@@ -16,22 +16,19 @@ const upload = multer({
   }
 });
 
-const EXTRACTION_PROMPT = `Extract all handwritten names from this image. This is a sign-up sheet for a badminton event.
+const EXTRACTION_PROMPT = `Extract handwritten names from this badminton sign-up sheet.
 
-IMPORTANT:
-- Names may be in Japanese (kanji, hiragana, katakana) or English
-- Remove any numbering (1., 2., ①, etc.) - return ONLY the name
-- One name per line, no extra text
-- For unclear handwriting, make your best guess
-- Ignore headers, dates, titles - only extract player names
+RULES:
+1. Output one name per line
+2. Names can be Japanese (漢字, ひらがな, カタカナ) or English
+3. REMOVE any numbering (1., 2., ①, etc.) - output ONLY the name itself
+4. IGNORE headers like "No.", "氏名", "名前"
+5. If a name is UNCLEAR or UNREADABLE, output an empty line (so organizer can fill it manually)
+6. Preserve the order as they appear
 
-Example input: "1. 田中太郎  2. Alice  3. 鈴木"
-Example output:
-田中太郎
-Alice
-鈴木
+Examples of Japanese names: 田中, 鈴木, うしお, せな, サイ, 坂本
 
-Now extract all names from this image:`;
+Output names now:`;
 
 // Provider: Anthropic Claude
 async function extractWithClaude(base64Image, mediaType) {
@@ -151,8 +148,7 @@ router.post('/extract-names', upload.single('image'), async (req, res) => {
       .split('\n')
       .map(name => {
         let cleaned = name.trim();
-        // Remove common numbering patterns:
-        // 1. 2. 3. | 1) 2) 3) | 1: 2: 3: | ① ② ③ | (1) (2) (3) | 1、2、3、
+        // Remove numbering patterns
         cleaned = cleaned
           .replace(/^[\d]+[.\):\-\s、]\s*/u, '')     // 1. 2) 3: 4- 5、
           .replace(/^[\(（][\d]+[\)）]\s*/u, '')     // (1) （2）
@@ -163,14 +159,24 @@ router.post('/extract-names', upload.single('image'), async (req, res) => {
         return cleaned;
       })
       .filter(name => {
-        // Filter out empty lines, headers, and non-name text
-        if (name.length === 0) return false;
+        // Filter headers, not empty lines (keep empty for manual edit)
         if (name.includes(':')) return false;
-        if (/^(name|names|player|players|参加者|名前|選手)$/i.test(name)) return false;
+        if (/^(no\.?|name|names|player|players|参加者|名前|選手|氏名|番号|ナンバー)$/i.test(name)) return false;
+        if (/^[\d]+$/.test(name)) return false;
         return true;
       });
 
-    res.json({ names, provider: provider.name });
+    // Remove consecutive empty lines, keep single empty lines for unclear names
+    const cleanedNames = [];
+    for (const name of names) {
+      if (name === '' && cleanedNames[cleanedNames.length - 1] === '') {
+        continue; // Skip consecutive empty lines
+      }
+      cleanedNames.push(name);
+    }
+
+    console.log(`Extracted ${cleanedNames.filter(n => n).length} names`);
+    res.json({ names: cleanedNames });
 
   } catch (error) {
     console.error('OCR extraction error:', error);

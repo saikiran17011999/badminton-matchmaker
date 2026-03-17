@@ -3,6 +3,7 @@ const router = express.Router();
 const eventController = require('../controllers/eventController');
 
 router.post('/', eventController.createEvent);
+router.get('/join/:shareCode', eventController.getEventByShareCode);
 router.get('/:eventId', eventController.getEvent);
 router.delete('/:eventId', eventController.deleteEvent);
 
