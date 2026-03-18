@@ -48,6 +48,11 @@ const generateRound = (eventId) => {
 
   Event.updateCurrentRound(eventId, newRoundNumber);
 
+  // Update join baseline to current min after round generation
+  // This prevents cascade when multiple players join mid-round
+  const newBaseline = Player.getMinMatchesPlayed(eventId);
+  Event.updateJoinBaseline(eventId, newBaseline);
+
   return {
     roundNumber: newRoundNumber,
     matches: createdMatches,

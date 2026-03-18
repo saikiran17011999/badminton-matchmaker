@@ -55,6 +55,9 @@ const initDatabase = async () => {
   try {
     db.run(`ALTER TABLE events ADD COLUMN share_code TEXT`);
   } catch (e) { /* Column already exists */ }
+  try {
+    db.run(`ALTER TABLE events ADD COLUMN join_baseline INTEGER DEFAULT 0`);
+  } catch (e) { /* Column already exists */ }
 
   db.run(`
     CREATE TABLE IF NOT EXISTS players (

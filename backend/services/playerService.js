@@ -5,9 +5,10 @@ const addPlayer = (eventId, { name }) => {
   const event = Event.findById(eventId);
   if (!event) return { error: 'Event not found' };
 
-  // New player gets min - 1 for slight priority, but not overwhelming advantage
-  const minMatches = Player.getMinMatchesPlayed(eventId);
-  const adjustedMatches = Math.max(0, minMatches - 1);
+  // Use join baseline (set when round is generated) to prevent cascade
+  // Multiple players joining mid-round all get the same baseline - 1
+  const baseline = Event.getJoinBaseline(eventId);
+  const adjustedMatches = Math.max(0, baseline - 1);
 
   const player = Player.create({
     eventId,

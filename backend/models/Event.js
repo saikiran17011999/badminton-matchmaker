@@ -43,6 +43,17 @@ class Event {
     return this.findById(id);
   }
 
+  static getJoinBaseline(id) {
+    const stmt = prepare('SELECT join_baseline FROM events WHERE id = ?');
+    const result = stmt.get(id);
+    return result?.join_baseline ?? 0;
+  }
+
+  static updateJoinBaseline(id, baseline) {
+    const stmt = prepare('UPDATE events SET join_baseline = ? WHERE id = ?');
+    stmt.run(baseline, id);
+  }
+
   static delete(id) {
     const stmt = prepare('DELETE FROM events WHERE id = ?');
     return stmt.run(id);
@@ -55,6 +66,7 @@ class Event {
       numCourts: event.num_courts,
       currentRound: event.current_round,
       shareCode: event.share_code,
+      joinBaseline: event.join_baseline ?? 0,
       createdAt: event.created_at
     };
 
