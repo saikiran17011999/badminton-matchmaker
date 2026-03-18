@@ -18,20 +18,33 @@ Core algorithm for generating fair badminton matches.
 
 ```
 1. Player Selection
-   └─> Select players with lowest match counts
+   └─> Select players with lowest match counts (matchesPlayed)
 
-2. Team Formation (Doubles)
+2. Late Joiner Handling
+   └─> New player gets max(0, min - 1) for fair priority
+
+3. Team Formation (Doubles)
    └─> Pair players to minimize intra-team rating diff
 
-3. Match Pairing
+4. Match Pairing
    └─> Match teams with similar average ratings
 
-4. Court Assignment
+5. Court Assignment
    └─> Assign matches to available courts
 
-5. Rating Update (after match)
+6. Swap Handling (Court ↔ Bench)
+   └─> Adjust matchesPlayed: +1 for court, -1 for bench
+
+7. Rating Update (after match)
    └─> Apply ELO formula with score modifier
 ```
+
+## Match Count Types
+
+| Field | Purpose |
+|-------|---------|
+| matchesPlayed | Adjusted count for matchmaking algorithm |
+| actualMatchesPlayed | Real count from matches table (UI display) |
 
 ## Key Functions
 

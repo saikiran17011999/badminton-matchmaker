@@ -24,9 +24,25 @@ For each round:
 ```
 When player joins mid-event:
 1. Find minimum matches_played among all players
-2. Set new player's matches_played = minimum
-3. This ensures fair priority in selection
+2. Set new player's matches_played = max(0, minimum - 1)
+3. This gives slight priority without overwhelming advantage
+4. Multiple late joiners get same baseline (no cascading)
 ```
+
+### Step 2b: Player Swap Handling
+
+```
+When players swap between court and bench:
+- Player going TO bench: matches_played decremented (-1)
+- Player going TO court: matches_played incremented (+1)
+- Court ↔ Court swaps: No adjustment needed (both playing)
+```
+
+### Display vs Algorithm Values
+
+The system tracks two different match counts:
+- **matchesPlayed**: Adjusted count used by matchmaking algorithm
+- **actualMatchesPlayed**: Real count from matches table (displayed in UI)
 
 ### Step 3: Team Formation (Doubles)
 

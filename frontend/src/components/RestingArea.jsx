@@ -37,7 +37,7 @@ const RestingArea = ({ players, onPlayerClick, isPlayerSelected, dragHandlers = 
             player={player}
             onClick={onPlayerClick}
             isSelected={isPlayerSelected?.(player.id)}
-            showRating={false}
+            showMatchCount={false}
             size="small"
             // Drag-and-drop
             draggable={!!dragHandlers}

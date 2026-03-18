@@ -54,7 +54,8 @@
     "save": "保存",
     "edit": "編集",
     "remove": "削除",
-    "resting": "休憩中の選手"
+    "resting": "休憩中の選手",
+    "matchCount": "{{count}}試合"
   },
   "swap": {
     "selectPlayer": "もう1人選択してください",

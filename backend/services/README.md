@@ -28,6 +28,8 @@ Swaps two players in the current round. Supports:
 - **Court ↔ Court (same match)**: Swap teammates or opponents
 - **Court ↔ Court (different matches)**: Swap players across courts
 - **Court ↔ Bench**: Swap a playing player with a resting player
+  - Adjusts `matchesPlayed`: player going to bench gets -1, player going to court gets +1
+  - Ensures fair matchmaking priority after manual swaps
 
 Uses `Round.updateRestingPlayers()` for bench swaps.
 

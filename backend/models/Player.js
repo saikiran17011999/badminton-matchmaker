@@ -50,6 +50,24 @@ class Player {
     stmt.run(id);
   }
 
+  static decrementMatchesPlayed(id) {
+    const stmt = prepare(`
+      UPDATE players SET matches_played = CASE WHEN matches_played > 0 THEN matches_played - 1 ELSE 0 END WHERE id = ?
+    `);
+    stmt.run(id);
+  }
+
+  static countActualMatches(eventId, playerId) {
+    const stmt = prepare(`
+      SELECT COUNT(*) as count FROM matches
+      WHERE event_id = ?
+      AND (team1_players LIKE ? OR team2_players LIKE ?)
+    `);
+    const pattern = `%${playerId}%`;
+    const result = stmt.get(eventId, pattern, pattern);
+    return result?.count ?? 0;
+  }
+
   static updateRating(id, newRating) {
     const stmt = prepare('UPDATE players SET rating = ? WHERE id = ?');
     stmt.run(Math.round(newRating), id);

@@ -13,7 +13,7 @@ const PlayerCard = ({
   player,
   onClick,
   isSelected,
-  showRating = true,
+  showMatchCount = true,
   size = 'normal',
   // Drag-and-drop props
   draggable = false,
@@ -74,8 +74,8 @@ const PlayerCard = ({
         <p className={`player-name ${isSmall ? 'player-name-sm' : ''}`}>
           {player.name}
         </p>
-        {showRating && player.rating !== undefined && (
-          <p className="player-rating">Lvl {player.rating}</p>
+        {showMatchCount && player.actualMatchesPlayed !== undefined && (
+          <p className="player-rating">{player.actualMatchesPlayed} match{player.actualMatchesPlayed !== 1 ? 'es' : ''}</p>
         )}
       </div>
 

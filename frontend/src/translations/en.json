@@ -54,7 +54,9 @@
     "save": "Save",
     "edit": "Edit",
     "remove": "Remove",
-    "resting": "Resting Players"
+    "resting": "Resting Players",
+    "matchCount": "{{count}} match",
+    "matchCountPlural": "{{count}} matches"
   },
   "swap": {
     "selectPlayer": "Select 1 more player",

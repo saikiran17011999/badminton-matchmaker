@@ -5,12 +5,14 @@ const addPlayer = (eventId, { name }) => {
   const event = Event.findById(eventId);
   if (!event) return { error: 'Event not found' };
 
+  // New player gets min - 1 for slight priority, but not overwhelming advantage
   const minMatches = Player.getMinMatchesPlayed(eventId);
+  const adjustedMatches = Math.max(0, minMatches - 1);
 
   const player = Player.create({
     eventId,
     name,
-    matchesPlayed: minMatches
+    matchesPlayed: adjustedMatches
   });
 
   return player;
@@ -32,7 +34,12 @@ const removePlayer = (playerId) => {
 };
 
 const getPlayers = (eventId) => {
-  return Player.findByEventId(eventId);
+  const players = Player.findByEventId(eventId);
+  // Add actual matches count (from matches table) for each player
+  return players.map(player => ({
+    ...player,
+    actualMatchesPlayed: Player.countActualMatches(eventId, player.id)
+  }));
 };
 
 module.exports = {

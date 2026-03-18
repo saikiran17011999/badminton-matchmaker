@@ -92,6 +92,23 @@ DELETE /events/:eventId?token=ADMIN_TOKEN
 
 ## Players
 
+### Player Object
+```json
+{
+  "id": "p1",
+  "name": "Alice",
+  "rating": 1000,
+  "matchesPlayed": 5,
+  "actualMatchesPlayed": 3,
+  "joinedAt": "2024-01-15T10:00:00Z"
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| matchesPlayed | Adjusted count for matchmaking algorithm |
+| actualMatchesPlayed | Real count from matches table (for UI display) |
+
 ### Add Player
 ```
 POST /events/:eventId/players
@@ -195,6 +212,12 @@ POST /events/:eventId/matches/swap
 | Court ↔ Court (same match) | Swap players within same match (teammates or opponents) |
 | Court ↔ Court (different match) | Swap players between different courts |
 | Court ↔ Bench | Swap a playing player with a resting player |
+
+**Note:** Court ↔ Bench swaps automatically adjust `matchesPlayed`:
+- Player going to bench: matchesPlayed decremented (-1)
+- Player going to court: matchesPlayed incremented (+1)
+
+This ensures fair matchmaking priority after manual swaps.
 
 **Response:**
 ```json

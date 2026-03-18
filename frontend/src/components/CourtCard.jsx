@@ -72,7 +72,7 @@ const CourtCard = ({
                   player={player}
                   onClick={onPlayerClick}
                   isSelected={isPlayerSelected(player.id)}
-                  showRating={false}
+                  showMatchCount={false}
                   size="medium"
                   // Drag-and-drop
                   draggable={!!dragHandlers}
@@ -107,7 +107,7 @@ const CourtCard = ({
                   player={player}
                   onClick={onPlayerClick}
                   isSelected={isPlayerSelected(player.id)}
-                  showRating={false}
+                  showMatchCount={false}
                   size="medium"
                   // Drag-and-drop
                   draggable={!!dragHandlers}

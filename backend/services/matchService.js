@@ -131,6 +131,12 @@ const swapPlayers = (eventId, roundNumber, player1Id, player2Id) => {
     newRestingPlayers[benchPlayerIndex] = { id: courtPlayerData.id, name: courtPlayerData.name };
     Round.updateRestingPlayers(eventId, roundNumber, newRestingPlayers);
 
+    // Adjust matches_played for fair matchmaking:
+    // - Player going to bench: decrement (they're not playing this match)
+    // - Player going to court: increment (they're now playing this match)
+    Player.decrementMatchesPlayed(courtPlayerData.id);
+    Player.incrementMatchesPlayed(benchPlayerData.id);
+
     return { success: true };
   }
 

@@ -34,6 +34,8 @@ Data models and database operations.
 
 ### Player
 - id, eventId, name, rating, matchesPlayed, joinedAt
+- **matchesPlayed**: Adjusted count for matchmaking (includes late-joiner normalization)
+- **actualMatchesPlayed**: Calculated from matches table (for UI display)
 
 ### Match
 - id, eventId, roundNumber, courtNumber, team1Players, team2Players, scores, status
