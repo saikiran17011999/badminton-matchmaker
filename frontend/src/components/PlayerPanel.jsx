@@ -80,13 +80,14 @@ const PlayerPanel = ({ players, onAddPlayer, onUpdatePlayer, onRemovePlayer, loa
         {players.map((player) => (
           <div
             key={player.id}
-            className="flex items-center gap-1.5"
+            className="flex items-center gap-2"
             style={{
               background: 'var(--bg-elevated)',
               border: '1px solid var(--border)',
-              borderRadius: '9px',
-              padding: '.35rem .5rem',
+              borderRadius: '10px',
+              padding: '.5rem .65rem',
               transition: 'border-color .2s',
+              minHeight: '48px',
             }}
           >
             {editingPlayer === player.id ? (
