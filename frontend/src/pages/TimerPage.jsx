@@ -22,21 +22,23 @@ const TimerPage = () => {
   // Timer state
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const [currentPhase, setCurrentPhase] = useState('training'); // 'training' or 'rest'
+  const [currentPhase, setCurrentPhase] = useState('rest'); // 'training' or 'rest'
   const [currentRound, setCurrentRound] = useState(1);
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [totalTime, setTotalTime] = useState(0);
+  const [isBeeping, setIsBeeping] = useState(false);
 
   const intervalRef = useRef(null);
   const audioContextRef = useRef(null);
+  const beepIntervalRef = useRef(null);
 
   // Generate arrays for pickers
   const minutes = Array.from({ length: 60 }, (_, i) => i);
   const seconds = Array.from({ length: 60 }, (_, i) => i);
   const reps = Array.from({ length: 20 }, (_, i) => i + 1);
 
-  // Beep sound function
-  const playBeep = useCallback((duration = 5000) => {
+  // Single beep sound function
+  const playBeep = useCallback((frequency = 880, duration = 200) => {
     if (!audioContextRef.current) {
       audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
     }
@@ -48,41 +50,58 @@ const TimerPage = () => {
     oscillator.connect(gainNode);
     gainNode.connect(ctx.destination);
 
-    oscillator.frequency.value = 880; // A5 note
+    oscillator.frequency.value = frequency;
     oscillator.type = 'sine';
-
-    // Beep pattern for 5 seconds (beep on/off)
-    const beepInterval = 500; // 500ms on, 500ms off
-    const beepCount = Math.floor(duration / (beepInterval * 2));
-
-    for (let i = 0; i < beepCount; i++) {
-      const startTime = ctx.currentTime + (i * beepInterval * 2) / 1000;
-      gainNode.gain.setValueAtTime(0.3, startTime);
-      gainNode.gain.setValueAtTime(0, startTime + beepInterval / 1000);
-    }
+    gainNode.gain.setValueAtTime(0.4, ctx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration / 1000);
 
     oscillator.start();
     oscillator.stop(ctx.currentTime + duration / 1000);
   }, []);
 
+  // Start countdown beeps (last 5 seconds)
+  const startCountdownBeeps = useCallback(() => {
+    if (isBeeping) return;
+    setIsBeeping(true);
+  }, [isBeeping]);
+
+  // Stop countdown beeps
+  const stopCountdownBeeps = useCallback(() => {
+    setIsBeeping(false);
+    if (beepIntervalRef.current) {
+      clearInterval(beepIntervalRef.current);
+      beepIntervalRef.current = null;
+    }
+  }, []);
+
   // Start timer
   const startTimer = () => {
     let initialTime;
+    let initialPhase;
+
     if (timerType === 'single') {
       initialTime = singleMinutes * 60 + singleSeconds;
+      initialPhase = 'training';
     } else {
-      initialTime = trainingMinutes * 60 + trainingSeconds;
+      // Repeatable: start with REST
+      initialTime = restMinutes * 60 + restSeconds;
+      initialPhase = 'rest';
+      // If no rest time, start with training instead
+      if (initialTime === 0) {
+        initialTime = trainingMinutes * 60 + trainingSeconds;
+        initialPhase = 'training';
+      }
     }
 
     if (initialTime === 0) return;
 
     setTimeRemaining(initialTime);
     setTotalTime(initialTime);
-    setCurrentPhase('training');
+    setCurrentPhase(initialPhase);
     setCurrentRound(1);
     setIsRunning(true);
     setIsPaused(false);
-    playBeep(5000); // Beep at start
+    setIsBeeping(false);
   };
 
   // Pause/Resume
@@ -96,9 +115,13 @@ const TimerPage = () => {
     setIsPaused(false);
     setTimeRemaining(0);
     setCurrentRound(1);
-    setCurrentPhase('training');
+    setCurrentPhase('rest');
+    setIsBeeping(false);
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
+    }
+    if (beepIntervalRef.current) {
+      clearInterval(beepIntervalRef.current);
     }
   };
 
@@ -107,9 +130,14 @@ const TimerPage = () => {
     if (isRunning && !isPaused) {
       intervalRef.current = setInterval(() => {
         setTimeRemaining((prev) => {
+          // Play beep in last 5 seconds
+          if (prev <= 5 && prev > 0) {
+            playBeep(prev === 1 ? 1200 : 880, prev === 1 ? 500 : 200); // Higher pitch on last beep
+          }
+
           if (prev <= 1) {
             // Timer finished
-            playBeep(5000); // Beep at end
+            setIsBeeping(false);
 
             if (timerType === 'single') {
               // Single timer done
@@ -117,36 +145,43 @@ const TimerPage = () => {
               return 0;
             }
 
-            // Repeatable timer logic
-            if (currentPhase === 'training') {
-              // Switch to rest
-              const restTime = restMinutes * 60 + restSeconds;
-              if (restTime > 0) {
-                setCurrentPhase('rest');
-                setTotalTime(restTime);
-                return restTime;
+            // Repeatable timer logic: REST → TRAINING → REST → TRAINING...
+            if (currentPhase === 'rest') {
+              // Switch to training
+              const trainTime = trainingMinutes * 60 + trainingSeconds;
+              if (trainTime > 0) {
+                setCurrentPhase('training');
+                setTotalTime(trainTime);
+                return trainTime;
               } else {
-                // No rest, go to next round or finish
+                // No training time, go to next round or finish
                 if (currentRound >= repetitions) {
                   setIsRunning(false);
                   return 0;
                 }
                 setCurrentRound((r) => r + 1);
-                const trainTime = trainingMinutes * 60 + trainingSeconds;
-                setTotalTime(trainTime);
-                return trainTime;
+                const restTime = restMinutes * 60 + restSeconds;
+                setTotalTime(restTime);
+                return restTime;
               }
             } else {
-              // Rest finished, go to next round or finish
+              // Training finished, go to next round or finish
               if (currentRound >= repetitions) {
                 setIsRunning(false);
                 return 0;
               }
               setCurrentRound((r) => r + 1);
-              setCurrentPhase('training');
-              const trainTime = trainingMinutes * 60 + trainingSeconds;
-              setTotalTime(trainTime);
-              return trainTime;
+              setCurrentPhase('rest');
+              const restTime = restMinutes * 60 + restSeconds;
+              // If no rest time, skip to training
+              if (restTime === 0) {
+                setCurrentPhase('training');
+                const trainTime = trainingMinutes * 60 + trainingSeconds;
+                setTotalTime(trainTime);
+                return trainTime;
+              }
+              setTotalTime(restTime);
+              return restTime;
             }
           }
           return prev - 1;
@@ -293,64 +328,53 @@ const TimerPage = () => {
           </button>
         </div>
       ) : (
-        /* Timer Running */
-        <div className="timer-running">
-          {/* Progress Ring */}
-          <div className="timer-progress-container">
-            <svg className="timer-progress-ring" viewBox="0 0 200 200">
-              <circle
-                className="timer-progress-bg"
-                cx="100"
-                cy="100"
-                r="90"
-                fill="none"
-                strokeWidth="8"
-              />
-              <circle
-                className="timer-progress-bar"
-                cx="100"
-                cy="100"
-                r="90"
-                fill="none"
-                strokeWidth="8"
-                strokeDasharray={565.48}
-                strokeDashoffset={565.48 * (1 - progress / 100)}
+        /* Timer Running - Full Screen Landscape Optimized */
+        <div className={`timer-fullscreen ${currentPhase === 'training' ? 'timer-fullscreen--training' : 'timer-fullscreen--rest'}`}>
+          {/* Phase indicator bar */}
+          <div className="timer-phase-bar">
+            <span className={`timer-phase-label ${currentPhase === 'training' ? 'timer-phase-label--training' : 'timer-phase-label--rest'}`}>
+              {currentPhase === 'training' ? t('timer.training') : t('timer.rest')}
+            </span>
+            {timerType === 'repeatable' && (
+              <span className="timer-round-label">
+                {t('timer.roundOf')} {currentRound} / {repetitions}
+              </span>
+            )}
+          </div>
+
+          {/* Main timer display */}
+          <div className="timer-main-display">
+            <div className={`timer-time-huge ${timeRemaining <= 5 ? 'timer-time-huge--warning' : ''}`}>
+              {formatTime(timeRemaining)}
+            </div>
+
+            {/* Progress bar */}
+            <div className="timer-progress-bar-container">
+              <div
+                className="timer-progress-bar-fill"
                 style={{
-                  stroke: currentPhase === 'training' ? 'var(--primary)' : 'var(--green)'
+                  width: `${progress}%`,
+                  backgroundColor: currentPhase === 'training' ? 'var(--primary)' : 'var(--green)'
                 }}
               />
-            </svg>
-
-            <div className="timer-display">
-              <span className="timer-time">{formatTime(timeRemaining)}</span>
-              {timerType === 'repeatable' && (
-                <>
-                  <span className="timer-phase">
-                    {currentPhase === 'training' ? t('timer.training') : t('timer.rest')}
-                  </span>
-                  <span className="timer-round">
-                    {t('timer.roundOf')} {currentRound} / {repetitions}
-                  </span>
-                </>
-              )}
             </div>
           </div>
 
           {/* Controls */}
-          <div className="timer-controls">
-            <button onClick={togglePause} className="timer-control-btn timer-control-btn--pause">
+          <div className="timer-fullscreen-controls">
+            <button onClick={togglePause} className={`timer-big-btn ${isPaused ? 'timer-big-btn--play' : 'timer-big-btn--pause'}`}>
               {isPaused ? (
-                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M8 5v14l11-7z" />
                 </svg>
               ) : (
-                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
                 </svg>
               )}
             </button>
-            <button onClick={stopTimer} className="timer-control-btn timer-control-btn--stop">
-              <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+            <button onClick={stopTimer} className="timer-big-btn timer-big-btn--stop">
+              <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M6 6h12v12H6z" />
               </svg>
             </button>

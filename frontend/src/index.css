@@ -2640,6 +2640,194 @@ body::after {
   border-color: var(--red);
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   FULLSCREEN TIMER - Landscape Optimized
+   ═══════════════════════════════════════════════════════════════════ */
+.timer-fullscreen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 2rem;
+  z-index: 100;
+  transition: background-color 0.5s ease;
+}
+
+.timer-fullscreen--rest {
+  background: linear-gradient(135deg, #065f46 0%, #064e3b 50%, #022c22 100%);
+}
+
+.timer-fullscreen--training {
+  background: linear-gradient(135deg, #991b1b 0%, #7f1d1d 50%, #450a0a 100%);
+}
+
+/* Phase indicator bar */
+.timer-phase-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 1rem;
+}
+
+.timer-phase-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(2rem, 8vw, 5rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.timer-phase-label--rest {
+  color: #6ee7b7;
+}
+
+.timer-phase-label--training {
+  color: #fca5a5;
+}
+
+.timer-round-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(1.2rem, 4vw, 2.5rem);
+  font-weight: 600;
+  color: rgba(255,255,255,0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Main timer display */
+.timer-main-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  width: 100%;
+}
+
+.timer-time-huge {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(8rem, 30vw, 20rem);
+  font-weight: 800;
+  color: white;
+  line-height: 1;
+  text-shadow: 0 8px 40px rgba(0,0,0,0.5);
+  letter-spacing: -0.02em;
+  transition: all 0.3s ease;
+}
+
+.timer-time-huge--warning {
+  animation: timer-pulse 0.5s ease-in-out infinite;
+  color: #fef08a;
+  text-shadow: 0 0 60px rgba(254,240,138,0.6), 0 8px 40px rgba(0,0,0,0.5);
+}
+
+@keyframes timer-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Progress bar */
+.timer-progress-bar-container {
+  width: 80%;
+  max-width: 800px;
+  height: 12px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 2rem;
+}
+
+.timer-progress-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 1s linear;
+}
+
+/* Fullscreen controls */
+.timer-fullscreen-controls {
+  display: flex;
+  gap: 2rem;
+  padding-bottom: 1rem;
+}
+
+.timer-big-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(70px, 15vw, 100px);
+  height: clamp(70px, 15vw, 100px);
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+}
+
+.timer-big-btn--play,
+.timer-big-btn--pause {
+  background: rgba(255,255,255,0.95);
+  color: #1f2937;
+}
+
+.timer-big-btn--play:hover,
+.timer-big-btn--pause:hover {
+  transform: scale(1.1);
+  background: white;
+}
+
+.timer-big-btn--stop {
+  background: rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.9);
+  border: 2px solid rgba(255,255,255,0.3);
+}
+
+.timer-big-btn--stop:hover {
+  background: rgba(239,68,68,0.9);
+  border-color: transparent;
+  transform: scale(1.1);
+}
+
+/* Landscape optimizations */
+@media (orientation: landscape) {
+  .timer-fullscreen {
+    flex-direction: row;
+    padding: 1rem 3rem;
+  }
+
+  .timer-phase-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    width: auto;
+    gap: 0.5rem;
+  }
+
+  .timer-main-display {
+    flex: 2;
+  }
+
+  .timer-fullscreen-controls {
+    flex-direction: column;
+    padding-bottom: 0;
+  }
+
+  .timer-progress-bar-container {
+    width: 60%;
+    margin-top: 1rem;
+  }
+}
+
+/* Very large screens */
+@media (min-width: 1400px) {
+  .timer-time-huge {
+    font-size: 18rem;
+  }
+}
+
 
 /* ═══════════════════════════════════════════════════════════════════
    FEEDBACK PAGE
