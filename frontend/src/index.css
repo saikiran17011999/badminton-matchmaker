@@ -2433,6 +2433,248 @@ body::after {
   letter-spacing: .05em;
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   TIMER SETUP - PREMIUM UI
+   ═══════════════════════════════════════════════════════════════════ */
+.timer-setup-premium {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1rem 2rem;
+  overflow-y: auto;
+  background: linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+}
+
+/* Hero Section */
+.timer-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.timer-hero-icon {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary) 0%, #ef4444 100%);
+  border-radius: 24px;
+  margin-bottom: 1rem;
+  box-shadow: 0 8px 32px var(--primary-glow), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.timer-hero-icon svg {
+  width: 44px;
+  height: 44px;
+  color: white;
+}
+
+.timer-hero-text {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+/* Timer Type Card */
+.timer-type-card {
+  width: 100%;
+  max-width: 380px;
+  margin-bottom: 1.5rem;
+}
+
+.timer-type-toggle-premium {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.35rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 2px 12px var(--shadow-warm);
+}
+
+.timer-type-btn-premium {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.9rem 1rem;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.timer-type-btn-premium:hover {
+  color: var(--text);
+  background: var(--bg-2);
+}
+.timer-type-btn-premium--active {
+  background: linear-gradient(135deg, var(--primary) 0%, #ef4444 100%);
+  color: white;
+  box-shadow: 0 4px 16px var(--primary-glow);
+}
+.timer-type-btn-premium--active:hover {
+  background: linear-gradient(135deg, var(--primary) 0%, #ef4444 100%);
+  color: white;
+}
+
+/* Timer Settings Cards */
+.timer-settings-premium {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 380px;
+}
+
+.timer-setting-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 1.25rem;
+  box-shadow: 0 4px 20px var(--shadow-warm);
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+.timer-setting-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.timer-setting-card:hover {
+  border-color: var(--border-hi);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px var(--shadow-warm);
+}
+.timer-setting-card:hover::before {
+  opacity: 1;
+}
+
+.timer-setting-card--rest::before { background: linear-gradient(90deg, #22c55e, #10b981); }
+.timer-setting-card--training::before { background: linear-gradient(90deg, var(--primary), #ef4444); }
+.timer-setting-card--reps::before { background: linear-gradient(90deg, #f59e0b, #f97316); }
+.timer-setting-card--single::before { background: linear-gradient(90deg, var(--primary), #ef4444); }
+
+.timer-setting-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.timer-setting-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+.timer-setting-icon--rest {
+  background: rgba(34, 197, 94, 0.12);
+  color: #22c55e;
+}
+.timer-setting-icon--training {
+  background: var(--primary-dim);
+  color: var(--primary);
+}
+.timer-setting-icon--reps {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+}
+
+.timer-setting-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0;
+}
+
+.timer-pickers-premium {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.timer-pickers-premium--single {
+  justify-content: center;
+}
+
+.timer-picker-colon {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0 0.25rem;
+  line-height: 1;
+}
+
+/* Premium Start Button */
+.timer-start-btn-premium {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 2rem;
+  padding: 1.1rem 3rem;
+  background: linear-gradient(135deg, var(--primary) 0%, #dc2626 50%, #b91c1c 100%);
+  border: none;
+  border-radius: 16px;
+  color: white;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  box-shadow: 0 8px 32px var(--primary-glow), inset 0 1px 0 rgba(255,255,255,0.2);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+.timer-start-btn-premium:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 40px var(--primary-glow), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.timer-start-btn-premium:active {
+  transform: translateY(-1px) scale(0.98);
+}
+.timer-start-btn-glow {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  animation: btn-shine 3s ease-in-out infinite;
+}
+@keyframes btn-shine {
+  0%, 100% { left: -100%; }
+  50% { left: 100%; }
+}
+
+/* Legacy styles kept for compatibility */
 .timer-setup {
   flex: 1;
   display: flex;
@@ -3144,6 +3386,282 @@ body::after {
 /* ═══════════════════════════════════════════════════════════════════
    COMBOS PAGE
    ═══════════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════════
+   VIDEOS/COMBOS PAGE - PREMIUM UI
+   ═══════════════════════════════════════════════════════════════════ */
+.combos-page-premium {
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+  display: flex;
+  flex-direction: column;
+}
+
+.combos-header-premium {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.combos-back-btn-premium {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px var(--shadow-warm);
+}
+.combos-back-btn-premium:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateX(-2px);
+}
+
+.combos-title-premium {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.combos-content-premium {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1rem 3rem;
+}
+
+/* Hero Section */
+.combos-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.combos-hero-icon {
+  width: 88px;
+  height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary) 0%, #ef4444 100%);
+  border-radius: 28px;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 12px 40px var(--primary-glow), inset 0 1px 0 rgba(255,255,255,0.2);
+  animation: hero-float 3s ease-in-out infinite;
+}
+.combos-hero-icon svg {
+  width: 48px;
+  height: 48px;
+  color: white;
+}
+
+@keyframes hero-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.combos-hero-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 0.5rem;
+}
+
+.combos-hero-subtitle {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  color: var(--text-2);
+  margin: 0;
+}
+
+/* Category Cards Grid */
+.combos-grid-premium {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 420px;
+}
+
+.combo-card-premium {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  overflow: hidden;
+  box-shadow: 0 4px 16px var(--shadow-warm);
+  animation: card-slide-in 0.5s ease backwards;
+}
+
+@keyframes card-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.combo-card-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 0%, var(--combo-color) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.combo-card-premium:hover {
+  border-color: var(--combo-color);
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 12px 40px var(--shadow-warm), 0 0 0 1px var(--combo-color);
+}
+.combo-card-premium:hover .combo-card-bg {
+  opacity: 0.06;
+}
+
+.combo-icon-premium {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(var(--icon-color), 0.1) 0%, rgba(var(--icon-color), 0.05) 100%);
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+.combo-icon-premium svg {
+  color: var(--combo-color);
+  transition: transform 0.3s ease;
+}
+.combo-card-premium:hover .combo-icon-premium svg {
+  transform: scale(1.1);
+}
+
+.combo-info-premium {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+}
+
+.combo-title-premium {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 0.25rem;
+  transition: color 0.3s ease;
+}
+.combo-card-premium:hover .combo-title-premium {
+  color: var(--combo-color);
+}
+
+.combo-description-premium {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  color: var(--text-2);
+  margin: 0 0 0.75rem;
+  line-height: 1.4;
+}
+
+.combo-video-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  background: linear-gradient(135deg, var(--combo-color) 0%, var(--combo-color) 100%);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  color: white;
+  letter-spacing: 0.04em;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.combo-coming-badge {
+  display: inline-flex;
+  padding: 0.35rem 0.75rem;
+  background: var(--bg-2);
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  color: var(--text-3);
+  letter-spacing: 0.04em;
+}
+
+.combo-arrow-premium {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--bg-2);
+  color: var(--text-3);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+.combo-card-premium:hover .combo-arrow-premium {
+  background: var(--combo-color);
+  color: white;
+  transform: translateX(4px);
+}
+
+/* Disabled state */
+.combo-card-premium--disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.combo-card-premium--disabled:hover {
+  transform: none;
+  box-shadow: 0 4px 16px var(--shadow-warm);
+  border-color: var(--border);
+}
+.combo-card-premium--disabled:hover .combo-arrow-premium {
+  background: var(--bg-2);
+  color: var(--text-3);
+  transform: none;
+}
+
+/* Legacy styles kept for compatibility */
 .combos-page {
   min-height: 100vh;
   background: var(--bg);

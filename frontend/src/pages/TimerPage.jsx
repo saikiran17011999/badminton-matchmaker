@@ -221,110 +221,123 @@ const TimerPage = () => {
       </header>
 
       {!isRunning ? (
-        /* Timer Setup */
-        <div className="timer-setup">
+        /* Timer Setup - Premium UI */
+        <div className="timer-setup-premium">
+          {/* Hero Section */}
+          <div className="timer-hero">
+            <div className="timer-hero-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 6v6l4 2" strokeLinecap="round" />
+              </svg>
+            </div>
+            <p className="timer-hero-text">{t('timer.title')}</p>
+          </div>
+
           {/* Timer Type Toggle */}
-          <div className="timer-type-toggle">
-            <button
-              className={`timer-type-btn ${timerType === 'repeatable' ? 'timer-type-btn--active' : ''}`}
-              onClick={() => setTimerType('repeatable')}
-            >
-              {t('timer.repeatable')}
-            </button>
-            <button
-              className={`timer-type-btn ${timerType === 'single' ? 'timer-type-btn--active' : ''}`}
-              onClick={() => setTimerType('single')}
-            >
-              {t('timer.single')}
-            </button>
+          <div className="timer-type-card">
+            <div className="timer-type-toggle-premium">
+              <button
+                className={`timer-type-btn-premium ${timerType === 'repeatable' ? 'timer-type-btn-premium--active' : ''}`}
+                onClick={() => setTimerType('repeatable')}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                {t('timer.repeatable')}
+              </button>
+              <button
+                className={`timer-type-btn-premium ${timerType === 'single' ? 'timer-type-btn-premium--active' : ''}`}
+                onClick={() => setTimerType('single')}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {t('timer.single')}
+              </button>
+            </div>
           </div>
 
           {timerType === 'repeatable' ? (
             /* Repeatable Timer Settings */
-            <div className="timer-settings">
-              {/* Training Time */}
-              <div className="timer-setting-group">
-                <h3 className="timer-setting-title">{t('timer.trainingTime')}</h3>
-                <div className="timer-pickers">
-                  <ScrollPicker
-                    values={minutes}
-                    selectedValue={trainingMinutes}
-                    onChange={setTrainingMinutes}
-                    label={t('timer.min')}
-                  />
-                  <span className="timer-picker-separator">:</span>
-                  <ScrollPicker
-                    values={seconds}
-                    selectedValue={trainingSeconds}
-                    onChange={setTrainingSeconds}
-                    label={t('timer.sec')}
-                  />
+            <div className="timer-settings-premium">
+              {/* Rest Time - First since it starts with rest */}
+              <div className="timer-setting-card timer-setting-card--rest">
+                <div className="timer-setting-header">
+                  <div className="timer-setting-icon timer-setting-icon--rest">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                  </div>
+                  <h3 className="timer-setting-label">{t('timer.restTime')}</h3>
+                </div>
+                <div className="timer-pickers-premium">
+                  <ScrollPicker values={minutes} selectedValue={restMinutes} onChange={setRestMinutes} label={t('timer.min')} />
+                  <span className="timer-picker-colon">:</span>
+                  <ScrollPicker values={seconds} selectedValue={restSeconds} onChange={setRestSeconds} label={t('timer.sec')} />
                 </div>
               </div>
 
-              {/* Rest Time */}
-              <div className="timer-setting-group">
-                <h3 className="timer-setting-title">{t('timer.restTime')}</h3>
-                <div className="timer-pickers">
-                  <ScrollPicker
-                    values={minutes}
-                    selectedValue={restMinutes}
-                    onChange={setRestMinutes}
-                    label={t('timer.min')}
-                  />
-                  <span className="timer-picker-separator">:</span>
-                  <ScrollPicker
-                    values={seconds}
-                    selectedValue={restSeconds}
-                    onChange={setRestSeconds}
-                    label={t('timer.sec')}
-                  />
+              {/* Training Time */}
+              <div className="timer-setting-card timer-setting-card--training">
+                <div className="timer-setting-header">
+                  <div className="timer-setting-icon timer-setting-icon--training">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
+                  <h3 className="timer-setting-label">{t('timer.trainingTime')}</h3>
+                </div>
+                <div className="timer-pickers-premium">
+                  <ScrollPicker values={minutes} selectedValue={trainingMinutes} onChange={setTrainingMinutes} label={t('timer.min')} />
+                  <span className="timer-picker-colon">:</span>
+                  <ScrollPicker values={seconds} selectedValue={trainingSeconds} onChange={setTrainingSeconds} label={t('timer.sec')} />
                 </div>
               </div>
 
               {/* Repetitions */}
-              <div className="timer-setting-group">
-                <h3 className="timer-setting-title">{t('timer.repetitions')}</h3>
-                <div className="timer-pickers timer-pickers--single">
-                  <ScrollPicker
-                    values={reps}
-                    selectedValue={repetitions}
-                    onChange={setRepetitions}
-                    label={t('timer.rounds')}
-                  />
+              <div className="timer-setting-card timer-setting-card--reps">
+                <div className="timer-setting-header">
+                  <div className="timer-setting-icon timer-setting-icon--reps">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                  </div>
+                  <h3 className="timer-setting-label">{t('timer.repetitions')}</h3>
+                </div>
+                <div className="timer-pickers-premium timer-pickers-premium--single">
+                  <ScrollPicker values={reps} selectedValue={repetitions} onChange={setRepetitions} label={t('timer.rounds')} />
                 </div>
               </div>
             </div>
           ) : (
             /* Single Timer Settings */
-            <div className="timer-settings">
-              <div className="timer-setting-group">
-                <h3 className="timer-setting-title">{t('timer.duration')}</h3>
-                <div className="timer-pickers">
-                  <ScrollPicker
-                    values={minutes}
-                    selectedValue={singleMinutes}
-                    onChange={setSingleMinutes}
-                    label={t('timer.min')}
-                  />
-                  <span className="timer-picker-separator">:</span>
-                  <ScrollPicker
-                    values={seconds}
-                    selectedValue={singleSeconds}
-                    onChange={setSingleSeconds}
-                    label={t('timer.sec')}
-                  />
+            <div className="timer-settings-premium">
+              <div className="timer-setting-card timer-setting-card--single">
+                <div className="timer-setting-header">
+                  <div className="timer-setting-icon timer-setting-icon--training">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="timer-setting-label">{t('timer.duration')}</h3>
+                </div>
+                <div className="timer-pickers-premium">
+                  <ScrollPicker values={minutes} selectedValue={singleMinutes} onChange={setSingleMinutes} label={t('timer.min')} />
+                  <span className="timer-picker-colon">:</span>
+                  <ScrollPicker values={seconds} selectedValue={singleSeconds} onChange={setSingleSeconds} label={t('timer.sec')} />
                 </div>
               </div>
             </div>
           )}
 
           {/* Start Button */}
-          <button onClick={startTimer} className="timer-start-btn">
-            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+          <button onClick={startTimer} className="timer-start-btn-premium">
+            <div className="timer-start-btn-glow" />
+            <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
               <path d="M8 5v14l11-7z" />
             </svg>
-            {t('timer.startTimer')}
+            <span>{t('timer.startTimer')}</span>
           </button>
         </div>
       ) : (
