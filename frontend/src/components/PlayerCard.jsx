@@ -74,8 +74,10 @@ const PlayerCard = ({
         <p className={`player-name ${isSmall ? 'player-name-sm' : ''}`}>
           {player.name}
         </p>
-        {showMatchCount && player.actualMatchesPlayed !== undefined && (
-          <p className="player-rating">{player.actualMatchesPlayed} match{player.actualMatchesPlayed !== 1 ? 'es' : ''}</p>
+        {showMatchCount && (player.actualMatchesPlayed !== undefined || player.matchesPlayed !== undefined) && (
+          <p className="player-rating">
+            {player.actualMatchesPlayed ?? player.matchesPlayed ?? 0} match{(player.actualMatchesPlayed ?? player.matchesPlayed ?? 0) !== 1 ? 'es' : ''}
+          </p>
         )}
       </div>
 
